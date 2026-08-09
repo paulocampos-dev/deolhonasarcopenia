@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Painel' }) %>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1>Painel</h1>
+<p class="hint">Escolha o que você quer editar.</p>
+<div class="grid-cards">
+<a class="dash-card" href="/admin/paginas/home">
+<span class="material-symbols-outlined">home</span>
+<h3>Página Inicial</h3>
+<p>Textos e imagens da home</p>
+</a>
+<a class="dash-card" href="/admin/exercicios">
+<span class="material-symbols-outlined">fitness_center</span>
+<h3>Exercícios</h3>
+<p><%= exerciseCount %> exercício(s)</p>
+</a>
+<a class="dash-card" href="/admin/posts">
+<span class="material-symbols-outlined">article</span>
+<h3>Posts do Blog</h3>
+<p><%= postCount %> post(s)</p>
+</a>
+<a class="dash-card" href="/admin/paginas/contato">
+<span class="material-symbols-outlined">mail</span>
+<h3>Página de Contato</h3>
+<p>Texto e imagem da página de contato</p>
+</a>
+<a class="dash-card" href="/admin/configuracoes">
+<span class="material-symbols-outlined">settings</span>
+<h3>Configurações do Site</h3>
+<p>Logo, rodapé, tamanho do texto</p>
+</a>
+</div>
+</div>
+</body>
+</html>

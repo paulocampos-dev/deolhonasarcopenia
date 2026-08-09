@@ -1,0 +1,19 @@
+# Admin app runtime state - lives only on the VPS, never committed
+admin/node_modules/
+admin/data/
+admin/.env
+
+# Generated static site output - rebuilt from the admin database on every
+# publish (see admin/src/lib/render.js). Source of truth is now the DB +
+# admin/templates/, not these files.
+/public/index.html
+/public/exercicios/index.html
+/public/blog/index.html
+/public/blog/*/
+/public/contato/index.html
+/public/contato/obrigado/
+/public/sitemap.xml
+/public/assets/js/tailwind-config.js
+
+# Admin-uploaded images (runtime content, not source assets)
+/public/assets/img/uploads/

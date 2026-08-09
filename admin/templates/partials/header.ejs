@@ -1,0 +1,46 @@
+<%
+const navItems = [
+    { key: 'home', label: 'Início', href: '/' },
+    { key: 'exercicios', label: 'Exercícios', href: '/exercicios/' },
+    { key: 'blog', label: 'Blog', href: '/blog/' },
+    { key: 'contato', label: 'Contato', href: '/contato/' },
+];
+const desktopClass = (isActive) =>
+    isActive
+        ? 'text-secondary dark:text-secondary-fixed border-b-4 border-secondary dark:border-secondary-fixed pb-1 hover:bg-surface-container-low transition-colors duration-200 min-h-[48px] flex items-center px-2'
+        : 'text-on-surface dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low transition-colors duration-200 min-h-[48px] flex items-center px-2';
+const mobileClass = (isActive) =>
+    isActive
+        ? 'min-h-[48px] flex items-center px-2 text-secondary'
+        : 'min-h-[48px] flex items-center px-2 text-on-surface hover:text-primary';
+%>
+<header class="bg-surface dark:bg-surface-container-lowest top-0 sticky z-50 border-b-2 border-primary dark:border-primary-container shadow-sm">
+<div class="flex justify-between items-center px-container-padding-mobile lg:px-container-padding-desktop py-4 max-w-[1200px] mx-auto">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low transition-colors duration-200 flex items-center gap-2" href="/">
+<% if (logoImage) { %>
+<img alt="<%= brandText %>" class="h-10 w-auto" src="<%= logoImage %>"/>
+<% } else { %>
+<span class="material-symbols-outlined text-primary icon-fill">vital_signs</span>
+<% } %>
+<%= brandText %>
+</a>
+<nav aria-label="Navegação principal" class="hidden md:flex gap-gutter items-center">
+<% navItems.forEach(function (item) { %>
+<a class="<%= desktopClass(item.key === activePage) %>" href="<%= item.href %>"<% if (item.key === activePage) { %> aria-current="page"<% } %>><%= item.label %></a>
+<% }) %>
+</nav>
+<a class="hidden md:inline-flex bg-primary text-white rounded-lg px-6 py-3 min-h-[56px] items-center justify-center font-label-lg hover:bg-primary-container transition-colors duration-200" href="/contato/">
+                Entrar em Contato
+            </a>
+<button aria-controls="mobile-menu" aria-expanded="false" aria-label="Menu" class="md:hidden flex items-center justify-center min-h-[48px] min-w-[48px] text-primary" data-mobile-menu-button>
+<span class="material-symbols-outlined" style="font-size: 32px;">menu</span>
+</button>
+</div>
+<div class="md:hidden hidden border-t-2 border-primary bg-surface" data-mobile-menu id="mobile-menu">
+<nav aria-label="Navegação móvel" class="flex flex-col px-container-padding-mobile py-2">
+<% navItems.forEach(function (item) { %>
+<a class="<%= mobileClass(item.key === activePage) %>" href="<%= item.href %>"<% if (item.key === activePage) { %> aria-current="page"<% } %>><%= item.label %></a>
+<% }) %>
+</nav>
+</div>
+</header>

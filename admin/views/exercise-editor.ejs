@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: id ? 'Editar Exercício' : 'Novo Exercício' }) %>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1><%= id ? 'Editar Exercício' : 'Novo Exercício' %></h1>
+<% if (id) { %><span class="badge <%= isPublished ? 'badge-published' : 'badge-draft' %>"><%= isPublished ? 'Publicado' : 'Rascunho' %></span><% } %>
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
+
+<div class="admin-card">
+<form action="<%= id ? ('/admin/exercicios/' + id) : '/admin/exercicios' %>" method="POST">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+
+<label for="title">Nome do exercício</label>
+<input id="title" name="title" required type="text" value="<%= exercise.title %>"/>
+
+<label>Imagem</label>
+<div class="upload-field" data-image-upload>
+<input data-image-value name="image" type="hidden" value="<%= exercise.image %>"/>
+<div class="upload-preview">
+<img alt="" data-image-preview src="<%= exercise.image %>" style="<%= exercise.image ? '' : 'display:none' %>"/>
+<div>
+<input accept="image/jpeg,image/png,image/webp" data-image-file type="file"/>
+<p class="field-hint" data-image-status>JPG, PNG ou WEBP.</p>
+</div>
+</div>
+</div>
+<label for="imageAlt">Descrição da imagem (para acessibilidade)</label>
+<input id="imageAlt" name="imageAlt" type="text" value="<%= exercise.imageAlt %>"/>
+
+<label for="itemsLabel">Texto do selo de itens recomendados</label>
+<input id="itemsLabel" name="itemsLabel" type="text" value="<%= exercise.itemsLabel %>"/>
+
+<label for="itemsIcon">Ícone do selo</label>
+<select id="itemsIcon" name="itemsIcon">
+<% [
+    ['fitness_center', 'Halteres'],
+    ['directions_walk', 'Caminhada'],
+    ['chair', 'Cadeira'],
+    ['self_improvement', 'Alongamento'],
+    ['accessibility_new', 'Mobilidade'],
+    ['favorite', 'Coração / Cardio'],
+    ['timer', 'Cronômetro'],
+    ['sports_gymnastics', 'Equilíbrio'],
+].forEach(function (opt) { %>
+<option value="<%= opt[0] %>" <%= exercise.itemsIcon === opt[0] ? 'selected' : '' %>><%= opt[1] %></option>
+<% }) %>
+</select>
+
+<label>Passo a passo</label>
+<div data-repeat-list="steps">
+<% exercise.steps.forEach(function (step) { %>
+<div class="step-row" data-repeat-row>
+<input name="steps[]" type="text" value="<%= step %>"/>
+<button class="btn btn-secondary" data-repeat-remove type="button">Remover</button>
+</div>
+<% }) %>
+<button class="btn btn-secondary" data-repeat-add type="button" style="margin-top: 8px;">+ Adicionar passo</button>
+</div>
+
+<div class="btn-row">
+<button class="btn btn-secondary" formaction="<%= id ? ('/admin/exercicios/' + id) : '/admin/exercicios' %>" type="submit">Salvar rascunho</button>
+<% if (id) { %>
+<a class="btn btn-secondary" href="/admin/preview/paginas/exercicios" target="_blank">Visualizar rascunho</a>
+<button class="btn btn-primary" formaction="/admin/exercicios/<%= id %>/publicar" type="submit">Publicar</button>
+<% } %>
+</div>
+</form>
+
+<% if (id) { %>
+<hr style="margin: 32px 0; border: none; border-top: 1px solid var(--outline);"/>
+<div class="btn-row" style="margin-top: 0;">
+<% if (isPublished) { %>
+<form action="/admin/exercicios/<%= id %>/despublicar" method="POST" onsubmit="return confirm('Despublicar este exercício? Ele deixará de aparecer no site.');">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-secondary" type="submit">Despublicar</button>
+</form>
+<% } %>
+<form action="/admin/exercicios/<%= id %>/excluir" method="POST" onsubmit="return confirm('Excluir este exercício permanentemente? Esta ação não pode ser desfeita.');">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-danger" type="submit">Excluir</button>
+</form>
+</div>
+<% } %>
+</div>
+</div>
+</body>
+</html>

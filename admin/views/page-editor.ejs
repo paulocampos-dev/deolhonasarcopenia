@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: title }) %>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1><%= title %></h1>
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
+<div class="admin-card">
+<form action="/admin/paginas/<%= key %>" method="POST">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<%
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+function text(name, label, opts) {
+    opts = opts || {};
+    var value = esc(page[name]);
+    var required = opts.required === false ? '' : 'required';
+    var input = opts.multiline
+        ? '<textarea id="' + name + '" name="' + name + '" ' + required + '>' + value + '</textarea>'
+        : '<input id="' + name + '" name="' + name + '" type="text" ' + required + ' value="' + value + '"/>';
+    var hint = opts.hint ? '<p class="field-hint">' + esc(opts.hint) + '</p>' : '';
+    return '<label for="' + name + '">' + esc(label) + '</label>' + input + hint;
+}
+function image(fieldName, altFieldName, label) {
+    var url = esc(page[fieldName]);
+    var display = page[fieldName] ? '' : 'style="display:none"';
+    return (
+        '<label>' + esc(label) + '</label>' +
+        '<div class="upload-field" data-image-upload>' +
+        '<input data-image-value name="' + fieldName + '" type="hidden" value="' + url + '"/>' +
+        '<div class="upload-preview">' +
+        '<img alt="" data-image-preview src="' + url + '" ' + display + '/>' +
+        '<div>' +
+        '<input accept="image/jpeg,image/png,image/webp" data-image-file type="file"/>' +
+        '<p class="field-hint" data-image-status>JPG, PNG ou WEBP.</p>' +
+        '</div></div></div>' +
+        '<label for="' + altFieldName + '">Descrição da imagem (para acessibilidade)</label>' +
+        '<input id="' + altFieldName + '" name="' + altFieldName + '" type="text" value="' + esc(page[altFieldName]) + '"/>'
+    );
+}
+%>
+
+<% if (key === 'home') { %>
+<%- text('eyebrow', 'Selo acima do título (ex: "Iniciativa USP")') %>
+<%- text('h1Prefix', 'Início do título principal', { hint: 'Ex: "O que é a"' }) %>
+<%- text('h1Highlight', 'Fim do título principal (destacado)', { hint: 'Ex: "Sarcopenia?"' }) %>
+<%- text('heroParagraph', 'Parágrafo de introdução', { multiline: true }) %>
+<%- image('heroImage', 'heroImageAlt', 'Imagem principal') %>
+<%- text('ctaPrimaryLabel', 'Texto do botão principal') %>
+<%- text('ctaSecondaryLabel', 'Texto do botão secundário') %>
+<%- text('badgeTitle', 'Selo sobre a imagem - título') %>
+<%- text('badgeSubtitle', 'Selo sobre a imagem - subtítulo') %>
+<%- text('aboutHeading', 'Título da seção "Missão"') %>
+<%- text('aboutParagraph1', 'Parágrafo 1 da seção "Missão"', { multiline: true }) %>
+<%- text('aboutParagraph2', 'Parágrafo 2 da seção "Missão"', { multiline: true }) %>
+<%- image('aboutImage', 'aboutImageAlt', 'Imagem da seção "Missão"') %>
+<%- text('helpHeading', 'Título "Como podemos ajudar"') %>
+<%- text('helpSubheading', 'Subtítulo "Como podemos ajudar"', { multiline: true }) %>
+<%- text('card1Title', 'Cartão 1 - Título') %>
+<%- text('card1Description', 'Cartão 1 - Descrição', { multiline: true }) %>
+<%- text('card1Cta', 'Cartão 1 - Texto do link') %>
+<%- text('card2Title', 'Cartão 2 - Título') %>
+<%- text('card2Description', 'Cartão 2 - Descrição', { multiline: true }) %>
+<%- text('card2Cta', 'Cartão 2 - Texto do link') %>
+<%- text('card3Title', 'Cartão 3 - Título') %>
+<%- text('card3Description', 'Cartão 3 - Descrição', { multiline: true }) %>
+<%- text('card3Cta', 'Cartão 3 - Texto do link') %>
+<% } else if (key === 'exercicios') { %>
+<%- text('heading', 'Título da página') %>
+<%- text('warningText', 'Texto do aviso médico', { multiline: true, hint: 'Aparece depois de "Atenção:" em destaque.' }) %>
+<% } else if (key === 'contato') { %>
+<%- text('heading', 'Título da página') %>
+<%- text('introParagraph', 'Parágrafo de introdução', { multiline: true }) %>
+<%- image('decorativeImage', 'decorativeImageAlt', 'Imagem decorativa') %>
+<% } %>
+
+<div class="btn-row">
+<button class="btn btn-secondary" formaction="/admin/paginas/<%= key %>" type="submit">Salvar rascunho</button>
+<a class="btn btn-secondary" href="/admin/preview/paginas/<%= key %>" target="_blank">Visualizar rascunho</a>
+<button class="btn btn-primary" formaction="/admin/paginas/<%= key %>/publicar" type="submit">Publicar</button>
+</div>
+</form>
+</div>
+</div>
+</body>
+</html>

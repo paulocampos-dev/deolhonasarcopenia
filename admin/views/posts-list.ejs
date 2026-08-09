@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Posts do Blog' }) %>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1>Posts do Blog</h1>
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
+
+<div class="btn-row" style="margin-top:0; margin-bottom: 20px;">
+<a class="btn btn-primary" href="/admin/posts/novo">+ Novo Post</a>
+</div>
+
+<% posts.forEach(function (post) { %>
+<div class="list-item">
+<img alt="" class="thumb" src="<%= post.draft.coverImage || '' %>"/>
+<div style="flex-grow:1;">
+<div class="list-item-title"><%= post.draft.title || '(sem título)' %></div>
+<div class="list-item-meta">
+<span class="badge <%= post.status === 'published' ? 'badge-published' : 'badge-draft' %>"><%= post.status === 'published' ? 'Publicado' : 'Rascunho' %></span>
+<%= post.draft.author %> · <%= post.draft.date %>
+</div>
+</div>
+<a class="btn btn-secondary" href="/admin/posts/<%= post.id %>">Editar</a>
+</div>
+<% }) %>
+<% if (posts.length === 0) { %>
+<p class="hint">Nenhum post cadastrado ainda.</p>
+<% } %>
+</div>
+</body>
+</html>

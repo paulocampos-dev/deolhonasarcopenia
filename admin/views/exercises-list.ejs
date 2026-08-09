@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Exercícios' }) %>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1>Exercícios</h1>
+<p class="hint">Use as setas para mudar a ordem em que aparecem no site.</p>
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
+
+<div class="btn-row" style="margin-top:0; margin-bottom: 20px;">
+<a class="btn btn-primary" href="/admin/exercicios/novo">+ Novo Exercício</a>
+</div>
+
+<form action="/admin/exercicios/reordenar" data-reorder-form method="POST">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<input data-reorder-value name="order" type="hidden" value=""/>
+<div data-reorder-list>
+<% exercises.forEach(function (ex) { %>
+<div class="list-item" data-item-id="<%= ex.id %>">
+<img alt="" class="thumb" src="<%= ex.draft.image || '' %>"/>
+<div style="flex-grow:1;">
+<div class="list-item-title"><%= ex.draft.title || '(sem título)' %></div>
+<div class="list-item-meta">
+<span class="badge <%= ex.status === 'published' ? 'badge-published' : 'badge-draft' %>"><%= ex.status === 'published' ? 'Publicado' : 'Rascunho' %></span>
+</div>
+</div>
+<div class="reorder-controls">
+<button data-move="up" type="button" title="Mover para cima">↑</button>
+<button data-move="down" type="button" title="Mover para baixo">↓</button>
+</div>
+<a class="btn btn-secondary" href="/admin/exercicios/<%= ex.id %>">Editar</a>
+</div>
+<% }) %>
+</div>
+</form>
+<% if (exercises.length === 0) { %>
+<p class="hint">Nenhum exercício cadastrado ainda.</p>
+<% } %>
+</div>
+</body>
+</html>

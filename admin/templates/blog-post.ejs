@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<%- include('partials/head', { title: post.title + ' - De Olho Na Sarcopenia', description: post.excerpt }) %>
+<style>
+    .post-body h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 24px; color: #75070c; margin-top: 1.5em; margin-bottom: 0.5em; }
+    .post-body h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 20px; color: #75070c; margin-top: 1.25em; margin-bottom: 0.5em; }
+    .post-body p { margin-bottom: 1.25em; }
+    .post-body a { color: #243f20; text-decoration: underline; }
+    .post-body img { border-radius: 0.75rem; margin: 1.5em 0; max-width: 100%; height: auto; }
+    .post-body ul, .post-body ol { margin: 1em 0 1.25em 1.5em; }
+    .post-body li { margin-bottom: 0.5em; }
+    .post-body strong { font-weight: 700; }
+</style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<%- include('partials/header', { activePage: 'blog', brandText: settings.brandText, logoImage: settings.logoImage }) %>
+<main class="flex-grow w-full max-w-3xl mx-auto px-container-padding-mobile lg:px-container-padding-desktop py-12">
+<a class="inline-flex items-center gap-2 text-primary font-label-lg text-label-lg mb-8 hover:underline" href="/blog/">
+<span class="material-symbols-outlined">arrow_back</span>
+                Voltar para o Blog
+            </a>
+<article>
+<header class="mb-8">
+<h1 class="font-headline-lg text-headline-lg md:font-display-lg md:text-display-lg text-tertiary mb-4"><%= post.title %></h1>
+<div class="flex items-center gap-3 font-body-md text-body-md text-on-surface-variant">
+<span><%= post.author %></span>
+<span aria-hidden="true">·</span>
+<time datetime="<%= post.date %>"><%= new Date(post.date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) %></time>
+</div>
+</header>
+<div class="w-full aspect-[16/9] rounded-xl overflow-hidden border border-outline-variant mb-8">
+<img alt="<%= post.coverImageAlt %>" class="w-full h-full object-cover" src="<%= post.coverImage %>"/>
+</div>
+<div class="post-body font-body-md text-body-md text-on-surface"><%- post.bodyHtml %></div>
+</article>
+</main>
+<%- include('partials/footer', { brandText: settings.brandText, footerOrgLine: settings.footerOrgLine, contactEmail: settings.contactEmail, instagramUrl: settings.instagramUrl, instagramLabel: settings.instagramLabel }) %>
+</body>
+</html>

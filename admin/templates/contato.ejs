@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Contato - De Olho Na Sarcopenia', description: 'Fale com a equipe do projeto De Olho Na Sarcopenia por e-mail, Instagram ou pelo formulário de contato.' }) %>
+<style>
+    .icon-fill { font-variation-settings: 'FILL' 1; }
+</style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md antialiased">
+<%- include('partials/header', { activePage: 'contato', brandText: settings.brandText, logoImage: settings.logoImage }) %>
+<main class="flex-grow flex flex-col justify-center py-12 px-container-padding-mobile lg:px-container-padding-desktop">
+<div class="max-w-[1200px] mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-stack-gap lg:gap-16 items-center">
+<!-- Left Side: Info & Greeting -->
+<div class="flex flex-col gap-6">
+<h1 class="font-display-lg text-display-lg text-primary md:font-display-lg font-headline-lg-mobile text-headline-lg-mobile">
+                    <%= page.heading %>
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant"><%= page.introParagraph %></p>
+<div class="flex flex-col gap-4 mt-4">
+<!-- Email Contact -->
+<div class="flex items-center gap-4 p-4 rounded-lg border-2 border-transparent hover:border-primary-container transition-colors" style="background-color: #DF9E3E;">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined icon-fill">mail</span>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface-charcoal">E-mail</h3>
+<a class="font-body-md text-body-md text-on-surface-charcoal hover:underline focus:outline-none focus:ring-2 focus:ring-secondary rounded-sm" href="mailto:<%= settings.contactEmail %>">
+                                <%= settings.contactEmail %>
+                            </a>
+</div>
+</div>
+<!-- Instagram Contact -->
+<div class="flex items-center gap-4 p-4 rounded-lg border-2 border-transparent hover:border-primary-container transition-colors" style="background-color: #DF9E3E;">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined icon-fill">photo_camera</span>
+</div>
+<div>
+<h3 class="font-label-lg text-label-lg text-on-surface-charcoal">Instagram</h3>
+<a class="font-body-md text-body-md text-on-surface-charcoal hover:underline focus:outline-none focus:ring-2 focus:ring-secondary rounded-sm" href="<%= settings.instagramUrl %>" rel="noopener noreferrer" target="_blank">
+                                <%= settings.instagramLabel %>
+                            </a>
+</div>
+</div>
+</div>
+<!-- Decorative Image/Illustration area -->
+<div class="mt-8 rounded-xl overflow-hidden border-2 border-primary-container bg-warm-sand p-6 flex items-center justify-center">
+<img alt="<%= page.decorativeImageAlt %>" class="w-full h-auto object-cover max-h-64 rounded-lg mix-blend-multiply opacity-90" src="<%= page.decorativeImage %>"/>
+</div>
+</div>
+<!-- Right Side: Contact Form -->
+<div class="p-8 lg:p-10 rounded-xl border-2 border-primary-container shadow-md relative" id="contato-form" style="background-color: #DF9E3E;">
+<div class="absolute -top-4 -right-4 w-12 h-12 bg-surface-container-lowest rounded-full flex items-center justify-center border-2 border-primary-container shadow-sm" style="color: #DF9E3E;">
+<span class="material-symbols-outlined icon-fill">send</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface-charcoal mb-6 border-b-2 pb-4" style="border-bottom-color: rgba(34, 27, 0, 0.2);">
+                    Envie sua Mensagem
+                </h2>
+<form action="https://formspree.io/f/xeajedeg" class="flex flex-col gap-6" method="POST">
+<input name="_subject" type="hidden" value="Nova mensagem via site - De Olho Na Sarcopenia"/>
+<input name="_next" type="hidden" value="https://deolhonasarcopenia.com.br/contato/obrigado/"/>
+<input aria-hidden="true" autocomplete="off" name="_gotcha" style="display:none" tabindex="-1" type="text"/>
+<!-- Nome Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-lg text-label-lg text-on-surface-charcoal" for="nome">
+                            Nome Completo
+                        </label>
+<input class="min-h-touch-target-min w-full bg-surface-container-lowest border-2 border-transparent text-on-surface rounded-lg px-4 py-3 focus:outline-none focus:border-primary-container focus:ring-0 transition-colors font-body-md placeholder-on-surface-variant/50" id="nome" name="nome" placeholder="Como gostaria de ser chamado?" required="" type="text"/>
+</div>
+<!-- Email Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-lg text-label-lg text-on-surface-charcoal" for="email">
+                            Endereço de E-mail
+                        </label>
+<input class="min-h-touch-target-min w-full bg-surface-container-lowest border-2 border-transparent text-on-surface rounded-lg px-4 py-3 focus:outline-none focus:border-primary-container focus:ring-0 transition-colors font-body-md placeholder-on-surface-variant/50" id="email" name="email" placeholder="exemplo@email.com" required="" type="email"/>
+</div>
+<!-- Mensagem Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label-lg text-label-lg text-on-surface-charcoal" for="mensagem">
+                            Sua Mensagem
+                        </label>
+<textarea class="w-full bg-surface-container-lowest border-2 border-transparent text-on-surface rounded-lg px-4 py-3 focus:outline-none focus:border-primary-container focus:ring-0 transition-colors font-body-md resize-y placeholder-on-surface-variant/50" id="mensagem" name="mensagem" placeholder="Escreva aqui sua dúvida ou relato..." required="" rows="5"></textarea>
+</div>
+<!-- Submit Button -->
+<button class="mt-4 min-h-touch-target-min w-full bg-primary text-on-primary font-label-lg text-label-lg rounded-lg hover:bg-primary-container focus:outline-none focus:ring-4 focus:ring-secondary focus:ring-offset-2 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md active:scale-[0.98]" type="submit">
+<span>Enviar Mensagem</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</form>
+</div>
+</div>
+</main>
+<%- include('partials/footer', { brandText: settings.brandText, footerOrgLine: settings.footerOrgLine, contactEmail: settings.contactEmail, instagramUrl: settings.instagramUrl, instagramLabel: settings.instagramLabel }) %>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: id ? 'Editar Post' : 'Novo Post' }) %>
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet"/>
+<style>
+    .ql-editor { min-height: 260px; font-size: 16px; font-family: 'Plus Jakarta Sans', sans-serif; }
+</style>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1><%= id ? 'Editar Post' : 'Novo Post' %></h1>
+<% if (id) { %><span class="badge <%= isPublished ? 'badge-published' : 'badge-draft' %>"><%= isPublished ? 'Publicado' : 'Rascunho' %></span><% } %>
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
+
+<div class="admin-card">
+<form action="<%= id ? ('/admin/posts/' + id) : '/admin/posts' %>" id="post-form" method="POST">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+
+<label for="title">Título</label>
+<input id="title" name="title" required type="text" value="<%= post.title %>"/>
+
+<% if (id) { %>
+<label for="slug">Endereço do post (URL)</label>
+<input id="slug" name="slug" pattern="[a-z0-9\-]+" title="Apenas letras minúsculas, números e hífens" type="text" value="<%= slug %>"/>
+<p class="field-hint">O post fica em deolhonasarcopenia.com.br/blog/<span id="slug-preview"><%= slug %></span>/</p>
+<% } %>
+
+<label for="author">Autor</label>
+<input id="author" name="author" required type="text" value="<%= post.author %>"/>
+
+<label for="date">Data</label>
+<input id="date" name="date" required type="date" value="<%= post.date %>"/>
+
+<label>Imagem de capa</label>
+<div class="upload-field" data-image-upload>
+<input data-image-value name="coverImage" type="hidden" value="<%= post.coverImage %>"/>
+<div class="upload-preview">
+<img alt="" data-image-preview src="<%= post.coverImage %>" style="<%= post.coverImage ? '' : 'display:none' %>"/>
+<div>
+<input accept="image/jpeg,image/png,image/webp" data-image-file type="file"/>
+<p class="field-hint" data-image-status>JPG, PNG ou WEBP.</p>
+</div>
+</div>
+</div>
+<label for="coverImageAlt">Descrição da imagem (para acessibilidade)</label>
+<input id="coverImageAlt" name="coverImageAlt" type="text" value="<%= post.coverImageAlt %>"/>
+
+<label for="excerpt">Resumo</label>
+<textarea id="excerpt" name="excerpt" required><%= post.excerpt %></textarea>
+<p class="field-hint">Aparece nos cartões da listagem do blog.</p>
+
+<label>Conteúdo do post</label>
+<div id="quill-editor"></div>
+<textarea id="bodyHtml" name="bodyHtml" style="display:none;"><%= post.bodyHtml %></textarea>
+
+<div class="btn-row">
+<button class="btn btn-secondary" formaction="<%= id ? ('/admin/posts/' + id) : '/admin/posts' %>" type="submit">Salvar rascunho</button>
+<% if (id) { %>
+<a class="btn btn-secondary" href="/admin/preview/posts/<%= id %>" target="_blank">Visualizar rascunho</a>
+<button class="btn btn-primary" formaction="/admin/posts/<%= id %>/publicar" type="submit">Publicar</button>
+<% } %>
+</div>
+</form>
+
+<% if (id) { %>
+<hr style="margin: 32px 0; border: none; border-top: 1px solid var(--outline);"/>
+<div class="btn-row" style="margin-top: 0;">
+<% if (isPublished) { %>
+<form action="/admin/posts/<%= id %>/despublicar" method="POST" onsubmit="return confirm('Despublicar este post? Ele deixará de aparecer no site.');">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-secondary" type="submit">Despublicar</button>
+</form>
+<% } %>
+<form action="/admin/posts/<%= id %>/excluir" method="POST" onsubmit="return confirm('Excluir este post permanentemente? Esta ação não pode ser desfeita.');">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-danger" type="submit">Excluir</button>
+</form>
+<% } %>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+(function () {
+    var hidden = document.getElementById('bodyHtml');
+    var quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: {
+                container: [
+                    [{ header: [2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'image', 'blockquote'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['clean'],
+                ],
+                handlers: {
+                    image: function () {
+                        var input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/jpeg,image/png,image/webp';
+                        input.onchange = function () {
+                            var file = input.files[0];
+                            if (!file) return;
+                            var formData = new FormData();
+                            formData.append('file', file);
+                            fetch('/admin/upload', {
+                                method: 'POST',
+                                headers: { 'x-csrf-token': window.__CSRF_TOKEN__ },
+                                body: formData,
+                            })
+                                .then(function (r) { return r.json(); })
+                                .then(function (data) {
+                                    if (!data.url) return;
+                                    var range = quill.getSelection(true);
+                                    quill.insertEmbed(range.index, 'image', data.url, 'user');
+                                    quill.setSelection(range.index + 1);
+                                });
+                        };
+                        input.click();
+                    },
+                },
+            },
+        },
+    });
+    quill.root.innerHTML = hidden.value;
+
+    var slugInput = document.getElementById('slug');
+    var slugPreview = document.getElementById('slug-preview');
+    if (slugInput && slugPreview) {
+        slugInput.addEventListener('input', function () {
+            slugPreview.textContent = slugInput.value;
+        });
+    }
+
+    document.getElementById('post-form').addEventListener('submit', function () {
+        hidden.value = quill.root.innerHTML;
+    });
+})();
+</script>
+</div>
+</body>
+</html>

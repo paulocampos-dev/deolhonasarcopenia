@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Blog - De Olho Na Sarcopenia', description: 'Informações confiáveis, dicas de saúde e opiniões de especialistas sobre a Sarcopenia e como manter a qualidade de vida.' }) %>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<%- include('partials/header', { activePage: 'blog', brandText: settings.brandText, logoImage: settings.logoImage }) %>
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-container-padding-mobile lg:px-container-padding-desktop py-12">
+<header class="mb-16 text-center">
+<h1 class="font-display-lg text-display-lg text-primary mb-4"><%= page.heading %></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto"><%= page.subheading %></p>
+</header>
+<% if (posts.length === 0) { %>
+<p class="text-center font-body-lg text-body-lg text-on-surface-variant">Nenhum post publicado ainda.</p>
+<% } else { %>
+<% const featured = posts[0]; const rest = posts.slice(1); %>
+<!-- Featured Post -->
+<section class="mb-16">
+<a class="grid grid-cols-1 md:grid-cols-12 gap-gutter bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant shadow-sm hover:shadow-md transition-shadow" href="/blog/<%= featured.slug %>/">
+<div class="md:col-span-7 h-64 md:h-auto min-h-[300px]">
+<img alt="<%= featured.coverImageAlt %>" class="w-full h-full object-cover" src="<%= featured.coverImage %>"/>
+</div>
+<div class="md:col-span-5 p-8 flex flex-col justify-center">
+<div class="inline-block bg-[#DF9E3E] text-on-surface-charcoal font-label-md text-label-md px-3 py-1 rounded-full w-max mb-4">Destaque</div>
+<h2 class="font-headline-lg text-headline-lg text-tertiary mb-4 leading-tight"><%= featured.title %></h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 line-clamp-3"><%= featured.excerpt %></p>
+<span class="inline-flex items-center font-label-lg text-label-lg text-primary">
+                        Ler Artigo Completo
+                        <span class="material-symbols-outlined ml-2">arrow_forward</span>
+</span>
+</div>
+</a>
+</section>
+<% if (rest.length > 0) { %>
+<!-- Grid of Posts -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<% rest.forEach(function (post) { %>
+<a class="flex flex-col bg-white rounded-xl overflow-hidden border border-primary-container shadow-sm hover:shadow-md transition-shadow h-full group" href="/blog/<%= post.slug %>/">
+<div class="h-48 overflow-hidden relative">
+<img alt="<%= post.coverImageAlt %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="<%= post.coverImage %>"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<h3 class="font-headline-md text-headline-md text-tertiary mb-3 group-hover:text-primary transition-colors"><%= post.title %></h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow line-clamp-3"><%= post.excerpt %></p>
+<span class="inline-flex items-center text-primary font-label-lg text-label-lg">
+                            Ler Mais
+                            <span class="material-symbols-outlined ml-1">arrow_forward</span>
+</span>
+</div>
+</a>
+<% }) %>
+</div>
+<% } %>
+<% } %>
+</main>
+<%- include('partials/footer', { brandText: settings.brandText, footerOrgLine: settings.footerOrgLine, contactEmail: settings.contactEmail, instagramUrl: settings.instagramUrl, instagramLabel: settings.instagramLabel }) %>
+</body>
+</html>

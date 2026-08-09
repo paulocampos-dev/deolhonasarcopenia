@@ -1,0 +1,15 @@
+<footer class="bg-primary dark:bg-on-primary-fixed font-label-md text-label-md border-t-4 border-secondary mt-auto" style="border-top-color: #DF9E3E;">
+<div class="flex flex-col md:flex-row justify-between items-center gap-gutter px-container-padding-mobile lg:px-container-padding-desktop py-12 max-w-[1200px] mx-auto text-on-primary dark:text-primary-fixed">
+<div class="flex flex-col items-center md:items-start gap-4">
+<span class="font-headline-md text-headline-md text-white"><%= brandText %></span>
+<p class="opacity-90">© <%= new Date().getFullYear() %> <%= brandText %> - <%= footerOrgLine %>. Todos os direitos reservados.</p>
+</div>
+<nav aria-label="Navegação do rodapé" class="flex flex-wrap justify-center items-center gap-6 mt-6 md:mt-0">
+<a class="text-on-primary opacity-90 hover:opacity-100 hover:text-secondary-fixed transition-opacity focus:outline-none focus:ring-2 focus:ring-warm-sand rounded p-1 min-h-[48px] flex items-center" href="mailto:<%= contactEmail %>">Contato</a>
+<a class="text-on-primary opacity-90 hover:opacity-100 hover:text-secondary-fixed transition-opacity focus:outline-none focus:ring-2 focus:ring-warm-sand rounded p-1 min-h-[48px] flex items-center" href="<%= instagramUrl %>" rel="noopener noreferrer" target="_blank"><%= instagramLabel %></a>
+<a aria-label="Área administrativa" class="text-on-primary/70 hover:text-on-primary transition-opacity focus:outline-none focus:ring-2 focus:ring-warm-sand rounded-full p-2 min-h-[48px] min-w-[48px] flex items-center justify-center" href="/admin" title="Área administrativa">
+<span class="material-symbols-outlined text-xl">lock</span>
+</a>
+</nav>
+</div>
+</footer>

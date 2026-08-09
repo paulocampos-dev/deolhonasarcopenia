@@ -1,0 +1,16 @@
+services:
+  admin:
+    build:
+      context: ./admin
+    container_name: deolhonasarcopenia-admin
+    restart: unless-stopped
+    env_file:
+      - ./admin/.env
+    environment:
+      NODE_ENV: production
+      SITE_ROOT: /app/site
+    volumes:
+      - .:/app/site
+      - ./admin/data:/app/data
+    ports:
+      - "127.0.0.1:4100:4100"

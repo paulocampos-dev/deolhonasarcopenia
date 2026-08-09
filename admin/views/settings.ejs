@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Configurações do Site' }) %>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1>Configurações do Site</h1>
+<p class="hint">Nome do site, rodapé, contato e tamanho do texto usado em todas as páginas.</p>
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
+<div class="admin-card">
+<form action="/admin/configuracoes" method="POST">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+
+<label for="brandText">Nome do site</label>
+<input id="brandText" name="brandText" required type="text" value="<%= settings.brandText %>"/>
+
+<label>Logo</label>
+<div class="upload-field" data-image-upload>
+<input data-image-value name="logoImage" type="hidden" value="<%= settings.logoImage || '' %>"/>
+<div class="upload-preview">
+<img alt="" data-image-preview src="<%= settings.logoImage || '' %>" style="<%= settings.logoImage ? '' : 'display:none' %>"/>
+<div>
+<input accept="image/jpeg,image/png,image/webp" data-image-file type="file"/>
+<p class="field-hint" data-image-status>Opcional. Se não enviar uma logo, o site usa o ícone e o nome do site.</p>
+</div>
+</div>
+</div>
+
+<label for="footerOrgLine">Linha da organização (rodapé)</label>
+<input id="footerOrgLine" name="footerOrgLine" required type="text" value="<%= settings.footerOrgLine %>"/>
+<p class="field-hint">Aparece como "© <%= new Date().getFullYear() %> <%= settings.brandText %> - [esta linha]."</p>
+
+<label for="contactEmail">E-mail de contato</label>
+<input id="contactEmail" name="contactEmail" required type="email" value="<%= settings.contactEmail %>"/>
+
+<label for="instagramUrl">Link do Instagram</label>
+<input id="instagramUrl" name="instagramUrl" required type="text" value="<%= settings.instagramUrl %>"/>
+
+<label for="instagramLabel">Texto do link do Instagram</label>
+<input id="instagramLabel" name="instagramLabel" required type="text" value="<%= settings.instagramLabel %>"/>
+
+<label for="textScale">Tamanho do texto</label>
+<select id="textScale" name="textScale">
+<% textScales.forEach(function (opt) { %>
+<option value="<%= opt.value %>" <%= settings.textScale === opt.value ? 'selected' : '' %>><%= opt.label %></option>
+<% }) %>
+</select>
+<p class="field-hint">Afeta o tamanho de todos os textos do site.</p>
+
+<div class="btn-row">
+<button class="btn btn-secondary" formaction="/admin/configuracoes" type="submit">Salvar rascunho</button>
+<a class="btn btn-secondary" href="/admin/preview/paginas/home" target="_blank">Visualizar rascunho</a>
+<button class="btn btn-primary" formaction="/admin/configuracoes/publicar" type="submit">Publicar</button>
+</div>
+</form>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "name": "deolhonasarcopenia-admin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Admin CMS for deolhonasarcopenia.com.br - edits content and renders the public static site",
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node src/db/seed.js",
+    "render": "node src/lib/render.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.3.0",
+    "connect-sqlite3": "^0.9.15",
+    "cookie-parser": "^1.4.6",
+    "csrf-csrf": "^3.0.6",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "multer": "^2.2.0",
+    "sanitize-html": "^2.13.0",
+    "sharp": "^0.33.5"
+  }
+}

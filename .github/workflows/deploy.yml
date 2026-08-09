@@ -34,7 +34,13 @@ jobs:
                 -o ConnectTimeout=20 \
                 -o ConnectionAttempts=1 \
                 "${VPS_USERNAME}@${VPS_HOST}" \
-                'set -e; cd /opt/deolhonasarcopenia; git checkout main; git pull origin main; echo "Deployed $(git rev-parse --short HEAD)"'; then
+                'set -e
+                 cd /opt/deolhonasarcopenia
+                 git checkout main
+                 git pull origin main
+                 echo "Deployed $(git rev-parse --short HEAD)"
+                 docker compose up -d --build
+                 docker compose exec -T admin node src/lib/render.js'; then
               exit 0
             fi
             echo "Attempt ${attempt} failed."
