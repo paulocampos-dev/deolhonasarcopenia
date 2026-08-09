@@ -11,17 +11,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          timeout: 60s
-          command_timeout: 5m
-          script: |
-            set -e
-            cd /opt/deolhonasarcopenia
-            git checkout main
-            git pull origin main
-            echo "Deployed $(git rev-parse --short HEAD)"
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USERNAME: ${{ secrets.VPS_USERNAME }}
+          VPS_PORT: ${{ secrets.VPS_PORT }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          PORT="${VPS_PORT:-22}"
+
+          # The VPS occasionally drops the first connection attempt from a
+          # fresh GitHub-hosted runner IP, so retry a few times before
+          # giving up rather than failing the whole deploy on one timeout.
+          max_attempts=4
+          for attempt in $(seq 1 "$max_attempts"); do
+            echo "Attempt ${attempt}/${max_attempts}..."
+            if ssh -i ~/.ssh/deploy_key -p "$PORT" \
+                -o StrictHostKeyChecking=accept-new \
+                -o ConnectTimeout=20 \
+                -o ConnectionAttempts=1 \
+                "${VPS_USERNAME}@${VPS_HOST}" \
+                'set -e; cd /opt/deolhonasarcopenia; git checkout main; git pull origin main; echo "Deployed $(git rev-parse --short HEAD)"'; then
+              exit 0
+            fi
+            echo "Attempt ${attempt} failed."
+            [ "$attempt" -lt "$max_attempts" ] && sleep 15
+          done
+
+          echo "All ${max_attempts} attempts failed."
+          exit 1
