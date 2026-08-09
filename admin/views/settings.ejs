@@ -2,6 +2,20 @@
 <html lang="pt-BR">
 <head>
 <%- include('partials/head', { title: 'Configurações do Site' }) %>
+<style>
+    .color-editor { display: flex; flex-wrap: wrap; gap: 32px; margin-top: 16px; }
+    .color-fields { flex: 1 1 280px; min-width: 0; }
+    .color-field-row { margin-bottom: 20px; }
+    .color-field-row label { margin: 0 0 6px; }
+    .color-field { display: flex; align-items: center; gap: 10px; }
+    .color-field input[type=color] { width: 48px; height: 48px; padding: 2px; border: 2px solid var(--outline); border-radius: 8px; flex-shrink: 0; background: none; cursor: pointer; }
+    .color-hex-input { min-height: 48px; font-family: monospace; text-transform: uppercase; }
+    .color-preview-panel { flex: 1 1 280px; min-width: 0; background: #fdfdfd; border: 1px solid var(--outline); border-radius: 12px; padding: 20px; }
+    .preview-buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+    .preview-buttons button { min-height: 44px; padding: 0 18px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: default; }
+    .preview-badge-row { display: flex; align-items: center; gap: 12px; }
+    .preview-badge-row [data-preview="badge"] { width: 40px; height: 40px; border-radius: 999px; display: flex; align-items: center; justify-content: center; color: #fff; }
+</style>
 </head>
 <body>
 <%- include('partials/nav', { csrfToken }) %>
@@ -51,6 +65,47 @@
 </select>
 <p class="field-hint">Afeta o tamanho de todos os textos do site.</p>
 
+<h2 style="margin-top: 32px;">Cores do Site</h2>
+<p class="hint">Mude as 3 cores principais. O exemplo ao lado atualiza enquanto você escolhe - a cor exata final é gerada ao publicar.</p>
+<div class="color-editor">
+<div class="color-fields">
+<div class="color-field-row">
+<label for="primaryColor">Cor Primária <span class="field-hint">(botões, links)</span></label>
+<div class="color-field">
+<input data-color-swatch="primary" id="primaryColor" name="primaryColor" type="color" value="<%= settings.primaryColor %>"/>
+<input class="color-hex-input" data-color-hex="primary" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="<%= settings.primaryColor %>"/>
+</div>
+</div>
+<div class="color-field-row">
+<label for="secondaryColor">Cor Secundária <span class="field-hint">(destaques, selos)</span></label>
+<div class="color-field">
+<input data-color-swatch="secondary" id="secondaryColor" name="secondaryColor" type="color" value="<%= settings.secondaryColor %>"/>
+<input class="color-hex-input" data-color-hex="secondary" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="<%= settings.secondaryColor %>"/>
+</div>
+</div>
+<div class="color-field-row">
+<label for="tertiaryColor">Cor Terciária <span class="field-hint">(títulos)</span></label>
+<div class="color-field">
+<input data-color-swatch="tertiary" id="tertiaryColor" name="tertiaryColor" type="color" value="<%= settings.tertiaryColor %>"/>
+<input class="color-hex-input" data-color-hex="tertiary" maxlength="7" pattern="#[0-9a-fA-F]{6}" value="<%= settings.tertiaryColor %>"/>
+</div>
+</div>
+</div>
+<div class="color-preview-panel">
+<p class="field-hint" style="margin-top:0;">Pré-visualização</p>
+<h3 data-preview="heading">Título de Exemplo</h3>
+<p data-preview="paragraph" style="margin-top:-8px;">Texto de exemplo do site.</p>
+<div class="preview-buttons">
+<button data-preview="btn-primary" type="button">Botão Primário</button>
+<button data-preview="btn-secondary" type="button">Botão Secundário</button>
+</div>
+<div class="preview-badge-row">
+<span data-preview="badge" class="material-symbols-outlined">fitness_center</span>
+<a data-preview="link" href="#" onclick="return false;">Link de exemplo</a>
+</div>
+</div>
+</div>
+
 <div class="btn-row">
 <button class="btn btn-secondary" formaction="/admin/configuracoes" type="submit">Salvar rascunho</button>
 <a class="btn btn-secondary" href="/admin/preview/paginas/home" target="_blank">Visualizar rascunho</a>
@@ -59,5 +114,91 @@
 </form>
 </div>
 </div>
+<script>
+(function () {
+    function hexToRgb(hex) {
+        var m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
+        if (!m) return null;
+        return { r: parseInt(m[1], 16), g: parseInt(m[2], 16), b: parseInt(m[3], 16) };
+    }
+    function toHex(n) {
+        var h = Math.max(0, Math.min(255, Math.round(n))).toString(16);
+        return h.length === 1 ? '0' + h : h;
+    }
+    function rgbToHex(r, g, b) {
+        return '#' + toHex(r) + toHex(g) + toHex(b);
+    }
+    // Rough approximation only, for instant client-side feedback - the
+    // real palette (used when publishing) is generated server-side with
+    // proper Material color tooling in admin/src/lib/palette.js.
+    function shade(hex, amount) {
+        var c = hexToRgb(hex);
+        if (!c) return hex;
+        var f = amount < 0 ? 0 : 255;
+        var p = Math.abs(amount);
+        return rgbToHex(c.r + (f - c.r) * p, c.g + (f - c.g) * p, c.b + (f - c.b) * p);
+    }
+    function readableTextColor(hex) {
+        var c = hexToRgb(hex);
+        if (!c) return '#000000';
+        var luminance = (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) / 255;
+        return luminance < 0.6 ? '#ffffff' : '#000000';
+    }
+
+    var swatches = {
+        primary: document.querySelector('[data-color-swatch="primary"]'),
+        secondary: document.querySelector('[data-color-swatch="secondary"]'),
+        tertiary: document.querySelector('[data-color-swatch="tertiary"]'),
+    };
+    var hexInputs = {
+        primary: document.querySelector('[data-color-hex="primary"]'),
+        secondary: document.querySelector('[data-color-hex="secondary"]'),
+        tertiary: document.querySelector('[data-color-hex="tertiary"]'),
+    };
+    var preview = {
+        heading: document.querySelector('[data-preview="heading"]'),
+        paragraph: document.querySelector('[data-preview="paragraph"]'),
+        btnPrimary: document.querySelector('[data-preview="btn-primary"]'),
+        btnSecondary: document.querySelector('[data-preview="btn-secondary"]'),
+        badge: document.querySelector('[data-preview="badge"]'),
+        link: document.querySelector('[data-preview="link"]'),
+    };
+
+    function update() {
+        var primary = swatches.primary.value;
+        var secondary = swatches.secondary.value;
+        var tertiary = swatches.tertiary.value;
+
+        preview.heading.style.color = tertiary;
+        preview.paragraph.style.color = '#434840';
+
+        preview.btnPrimary.style.background = primary;
+        preview.btnPrimary.style.color = readableTextColor(primary);
+        preview.btnPrimary.style.border = 'none';
+
+        preview.btnSecondary.style.background = '#fff';
+        preview.btnSecondary.style.color = secondary;
+        preview.btnSecondary.style.border = '2px solid ' + secondary;
+
+        preview.badge.style.background = shade(secondary, 0.35);
+        preview.link.style.color = primary;
+    }
+
+    Object.keys(swatches).forEach(function (key) {
+        swatches[key].addEventListener('input', function () {
+            hexInputs[key].value = swatches[key].value;
+            update();
+        });
+        hexInputs[key].addEventListener('input', function () {
+            if (/^#[0-9a-fA-F]{6}$/.test(hexInputs[key].value)) {
+                swatches[key].value = hexInputs[key].value;
+                update();
+            }
+        });
+    });
+
+    update();
+})();
+</script>
 </body>
 </html>

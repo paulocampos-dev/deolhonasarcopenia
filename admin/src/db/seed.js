@@ -14,6 +14,9 @@ function seedSettings() {
         instagramLabel: 'Instagram',
         logoImage: null,
         textScale: 'normal',
+        primaryColor: '#243f20',
+        secondaryColor: '#835500',
+        tertiaryColor: '#75070c',
     });
     db.publishSettings();
     console.log('Seeded: settings');

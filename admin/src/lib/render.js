@@ -32,6 +32,9 @@ const DEFAULT_SETTINGS = {
     instagramLabel: 'Instagram',
     logoImage: null,
     textScale: 'normal',
+    primaryColor: '#243f20',
+    secondaryColor: '#835500',
+    tertiaryColor: '#75070c',
 };
 
 function getPublishedSettings() {
@@ -72,7 +75,7 @@ function publishedPosts() {
 function renderAll() {
     const settings = getPublishedSettings();
 
-    writeFile('assets/js/tailwind-config.js', buildTailwindConfigJs(settings.textScale));
+    writeFile('assets/js/tailwind-config.js', buildTailwindConfigJs(settings));
 
     const homePage = getPublishedPage('home', {});
     writeFile('index.html', renderTemplate('home', { settings, page: homePage }));
