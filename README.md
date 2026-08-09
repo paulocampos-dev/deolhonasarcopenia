@@ -29,3 +29,4 @@ npx serve public
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which SSHes into the VPS and
 runs `git pull` in `/opt/deolhonasarcopenia` (served directly by nginx — no build step).
+
