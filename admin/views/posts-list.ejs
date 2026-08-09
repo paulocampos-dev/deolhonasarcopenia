@@ -17,15 +17,19 @@
 
 <% posts.forEach(function (post) { %>
 <div class="list-item">
+<div class="list-item-info">
 <img alt="" class="thumb" src="<%= post.draft.coverImage || '' %>"/>
-<div style="flex-grow:1;">
+<div class="list-item-text">
 <div class="list-item-title"><%= post.draft.title || '(sem título)' %></div>
 <div class="list-item-meta">
 <span class="badge <%= post.status === 'published' ? 'badge-published' : 'badge-draft' %>"><%= post.status === 'published' ? 'Publicado' : 'Rascunho' %></span>
 <%= post.draft.author %> · <%= post.draft.date %>
 </div>
 </div>
+</div>
+<div class="list-item-actions">
 <a class="btn btn-secondary" href="/admin/posts/<%= post.id %>">Editar</a>
+</div>
 </div>
 <% }) %>
 <% if (posts.length === 0) { %>

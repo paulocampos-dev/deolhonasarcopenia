@@ -22,18 +22,22 @@
 <div data-reorder-list>
 <% exercises.forEach(function (ex) { %>
 <div class="list-item" data-item-id="<%= ex.id %>">
+<div class="list-item-info">
 <img alt="" class="thumb" src="<%= ex.draft.image || '' %>"/>
-<div style="flex-grow:1;">
+<div class="list-item-text">
 <div class="list-item-title"><%= ex.draft.title || '(sem título)' %></div>
 <div class="list-item-meta">
 <span class="badge <%= ex.status === 'published' ? 'badge-published' : 'badge-draft' %>"><%= ex.status === 'published' ? 'Publicado' : 'Rascunho' %></span>
 </div>
 </div>
+</div>
+<div class="list-item-actions">
 <div class="reorder-controls">
 <button data-move="up" type="button" title="Mover para cima">↑</button>
 <button data-move="down" type="button" title="Mover para baixo">↓</button>
 </div>
 <a class="btn btn-secondary" href="/admin/exercicios/<%= ex.id %>">Editar</a>
+</div>
 </div>
 <% }) %>
 </div>
