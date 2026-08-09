@@ -1,0 +1,40 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify VPS SSH connectivity
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: |
+            HOST="${{ secrets.VPS_HOST }}"
+            PORT="${{ secrets.VPS_PORT }}"
+            if [ -z "$PORT" ]; then PORT=22; fi
+            echo "Checking SSH connectivity to ${HOST}:${PORT}..."
+            nc -z -w 15 "$HOST" "$PORT"
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          timeout: 60s
+          command_timeout: 5m
+          script: |
+            set -e
+            cd /opt/deolhonasarcopenia
+            git checkout main
+            git pull origin main
+            echo "Deployed $(git rev-parse --short HEAD)"
