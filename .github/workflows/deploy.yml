@@ -10,19 +10,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Verify VPS SSH connectivity
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 5
-          max_attempts: 3
-          retry_wait_seconds: 30
-          command: |
-            HOST="${{ secrets.VPS_HOST }}"
-            PORT="${{ secrets.VPS_PORT }}"
-            if [ -z "$PORT" ]; then PORT=22; fi
-            echo "Checking SSH connectivity to ${HOST}:${PORT}..."
-            nc -z -w 15 "$HOST" "$PORT"
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
