@@ -3,6 +3,9 @@ admin/node_modules/
 admin/data/
 admin/.env
 
+# Local-only credentials reference, never committed
+admin-credentials.txt
+
 # Generated static site output - rebuilt from the admin database on every
 # publish (see admin/src/lib/render.js). Source of truth is now the DB +
 # admin/templates/, not these files.

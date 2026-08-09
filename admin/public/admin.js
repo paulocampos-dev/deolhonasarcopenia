@@ -1,4 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-password-toggle]').forEach(function (widget) {
+        var input = widget.querySelector('[data-password-input]');
+        var btn = widget.querySelector('[data-password-toggle-btn]');
+        var icon = widget.querySelector('[data-password-icon]');
+        if (!input || !btn) return;
+
+        btn.addEventListener('click', function () {
+            var isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            icon.textContent = isHidden ? 'visibility_off' : 'visibility';
+            btn.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
+        });
+    });
+
     document.querySelectorAll('[data-image-upload]').forEach(function (widget) {
         var fileInput = widget.querySelector('[data-image-file]');
         var hiddenInput = widget.querySelector('[data-image-value]');

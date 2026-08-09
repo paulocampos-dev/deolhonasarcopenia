@@ -16,7 +16,12 @@
 <label for="username">Usuário</label>
 <input autocomplete="username" id="username" name="username" required type="text"/>
 <label for="password">Senha</label>
-<input autocomplete="current-password" id="password" name="password" required type="password"/>
+<div class="password-field" data-password-toggle>
+<input autocomplete="current-password" data-password-input id="password" name="password" required type="password"/>
+<button aria-label="Mostrar senha" class="password-toggle-btn" data-password-toggle-btn type="button">
+<span class="material-symbols-outlined" data-password-icon>visibility</span>
+</button>
+</div>
 <div class="btn-row">
 <button class="btn btn-primary" style="width: 100%;" type="submit">Entrar</button>
 </div>
