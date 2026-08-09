@@ -24,6 +24,7 @@
         font-variation-settings: 'FILL' 1;
     }
 </style>
+<script src="/assets/js/mobile-menu.js" defer></script>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col">
 <!-- TopNavBar -->
@@ -39,9 +40,17 @@
 <a class="hidden md:flex bg-primary text-on-primary font-label-lg text-label-lg rounded-lg px-6 min-h-[48px] items-center justify-center hover:bg-primary-container transition-colors focus:ring-4 focus:ring-warm-sand" href="/contato/">
                 Entrar em Contato
             </a>
-<button aria-label="Menu" class="md:hidden flex items-center justify-center min-h-[48px] min-w-[48px] text-primary">
+<button aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-mobile-menu-button class="md:hidden flex items-center justify-center min-h-[48px] min-w-[48px] text-primary">
 <span class="material-symbols-outlined" style="font-size: 32px;">menu</span>
 </button>
+</div>
+<div id="mobile-menu" data-mobile-menu class="md:hidden hidden border-t-2 border-primary bg-surface">
+<nav aria-label="Navegação móvel" class="flex flex-col px-container-padding-mobile py-2">
+<a class="min-h-[48px] flex items-center px-2 text-on-surface hover:text-primary" href="/">Início</a>
+<a class="min-h-[48px] flex items-center px-2 text-on-surface hover:text-primary" href="/exercicios/">Exercícios</a>
+<a aria-current="page" class="min-h-[48px] flex items-center px-2 text-secondary" href="/blog/">Blog</a>
+<a class="min-h-[48px] flex items-center px-2 text-on-surface hover:text-primary" href="/contato/">Contato</a>
+</nav>
 </div>
 </header>
 <!-- Main Content -->

@@ -24,11 +24,12 @@
         font-variation-settings: 'FILL' 1;
     }
 </style>
+<script src="/assets/js/mobile-menu.js" defer></script>
 </head>
 <body class="antialiased min-h-screen flex flex-col pt-[88px] text-on-background">
 <!-- TopNavBar -->
-<header class="bg-surface fixed top-0 w-full z-50 border-b border-outline-variant shadow-sm transition-colors duration-200 h-[88px] flex items-center">
-<div class="flex justify-between items-center px-gutter py-4 w-full max-w-container-max mx-auto">
+<header class="bg-surface fixed top-0 w-full z-50 border-b border-outline-variant shadow-sm transition-colors duration-200">
+<div class="h-[88px] flex justify-between items-center px-gutter py-4 w-full max-w-container-max mx-auto">
 <a class="font-headline-md text-headline-md font-bold text-tertiary focus:ring-4 focus:ring-primary-container rounded-lg outline-none flex items-center gap-2" href="/">
 <span class="material-symbols-outlined text-tertiary icon-fill">vital_signs</span>
                 De Olho Na Sarcopenia
@@ -40,10 +41,18 @@
 <a class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary focus:ring-4 focus:ring-primary-container outline-none hover:bg-surface-container-low transition-colors duration-200 px-2 rounded-sm pb-1" href="/contato/">Contato</a>
 </nav>
 <div class="flex items-center gap-4">
-<button aria-label="Menu" class="md:hidden p-2 text-on-surface-variant hover:text-primary focus:ring-4 focus:ring-primary-container rounded-lg outline-none">
+<button aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-mobile-menu-button class="md:hidden p-2 text-on-surface-variant hover:text-primary focus:ring-4 focus:ring-primary-container rounded-lg outline-none">
 <span class="material-symbols-outlined text-3xl">menu</span>
 </button>
 </div>
+</div>
+<div id="mobile-menu" data-mobile-menu class="md:hidden hidden border-t border-outline-variant bg-surface">
+<nav aria-label="Navegação móvel" class="flex flex-col px-gutter py-2">
+<a aria-current="page" class="min-h-touch-target-min flex items-center px-2 font-label-lg text-label-lg text-primary" href="/">Início</a>
+<a class="min-h-touch-target-min flex items-center px-2 font-label-lg text-label-lg text-on-surface-variant hover:text-primary" href="/exercicios/">Exercícios</a>
+<a class="min-h-touch-target-min flex items-center px-2 font-label-lg text-label-lg text-on-surface-variant hover:text-primary" href="/blog/">Blog</a>
+<a class="min-h-touch-target-min flex items-center px-2 font-label-lg text-label-lg text-on-surface-variant hover:text-primary" href="/contato/">Contato</a>
+</nav>
 </div>
 </header>
 <main class="flex-grow">

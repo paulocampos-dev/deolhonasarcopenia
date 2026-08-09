@@ -24,6 +24,7 @@
         font-variation-settings: 'FILL' 1;
     }
 </style>
+<script src="/assets/js/mobile-menu.js" defer></script>
 </head>
 <body class="bg-background text-on-background antialiased min-h-screen flex flex-col">
 <!-- TopNavBar -->
@@ -41,9 +42,17 @@
 <a class="hidden md:inline-flex bg-primary text-white rounded-lg px-6 py-3 min-h-[56px] items-center justify-center font-label-lg hover:bg-primary-container transition-colors duration-200" href="/contato/">
                 Entrar em Contato
             </a>
-<button aria-label="Menu" class="md:hidden flex items-center justify-center min-h-[48px] min-w-[48px] text-primary">
+<button aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-mobile-menu-button class="md:hidden flex items-center justify-center min-h-[48px] min-w-[48px] text-primary">
 <span class="material-symbols-outlined" style="font-size: 32px;">menu</span>
 </button>
+</div>
+<div id="mobile-menu" data-mobile-menu class="md:hidden hidden border-t-2 border-primary bg-surface">
+<nav aria-label="Navegação móvel" class="flex flex-col px-container-padding-mobile py-2">
+<a class="min-h-[48px] flex items-center px-2 text-on-surface hover:text-primary" href="/">Início</a>
+<a aria-current="page" class="min-h-[48px] flex items-center px-2 text-secondary" href="/exercicios/">Exercícios</a>
+<a class="min-h-[48px] flex items-center px-2 text-on-surface hover:text-primary" href="/blog/">Blog</a>
+<a class="min-h-[48px] flex items-center px-2 text-on-surface hover:text-primary" href="/contato/">Contato</a>
+</nav>
 </div>
 </header>
 <!-- Main Content Canvas -->

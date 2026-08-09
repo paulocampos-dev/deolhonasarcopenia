@@ -27,6 +27,7 @@
         font-variation-settings: 'FILL' 1;
     }
 </style>
+<script src="/assets/js/mobile-menu.js" defer></script>
 </head>
 <body class="min-h-screen flex flex-col font-body-md text-body-md antialiased">
 <!-- TopNavBar -->
@@ -55,10 +56,18 @@
 <a class="hidden md:inline-flex items-center justify-center min-h-touch-target-min px-6 py-3 bg-primary text-on-primary font-label-lg text-label-lg rounded-lg hover:bg-primary-container transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2" href="#contato-form">
                 Entrar em Contato
             </a>
-<!-- Mobile Menu Toggle (Visual Only for layout) -->
-<button aria-label="Menu" class="md:hidden p-2 text-primary focus:outline-none focus:ring-2 focus:ring-secondary rounded-DEFAULT min-h-touch-target-min min-w-touch-target-min flex items-center justify-center">
+<!-- Mobile Menu Toggle -->
+<button aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-mobile-menu-button class="md:hidden p-2 text-primary focus:outline-none focus:ring-2 focus:ring-secondary rounded-DEFAULT min-h-touch-target-min min-w-touch-target-min flex items-center justify-center">
 <span class="material-symbols-outlined">menu</span>
 </button>
+</div>
+<div id="mobile-menu" data-mobile-menu class="md:hidden hidden border-t-2 border-primary bg-surface">
+<nav aria-label="Navegação móvel" class="flex flex-col px-container-padding-mobile py-2">
+<a class="min-h-touch-target-min flex items-center px-2 text-on-surface hover:text-primary" href="/">Início</a>
+<a class="min-h-touch-target-min flex items-center px-2 text-on-surface hover:text-primary" href="/exercicios/">Exercícios</a>
+<a class="min-h-touch-target-min flex items-center px-2 text-on-surface hover:text-primary" href="/blog/">Blog</a>
+<a aria-current="page" class="min-h-touch-target-min flex items-center px-2 text-secondary" href="/contato/">Contato</a>
+</nav>
 </div>
 </header>
 <!-- Main Content -->
