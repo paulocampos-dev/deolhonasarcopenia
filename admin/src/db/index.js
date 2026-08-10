@@ -185,6 +185,46 @@ function deletePost(id) {
     db.prepare('DELETE FROM posts WHERE id = ?').run(id);
 }
 
+// ---- comments ----
+
+function createComment(postId, { authorName, authorContact, body, status }) {
+    const info = db
+        .prepare(
+            'INSERT INTO comments (post_id, author_name, author_contact, body, status, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+        )
+        .run(postId, authorName || null, authorContact || null, body, status, now());
+    return info.lastInsertRowid;
+}
+
+function listApprovedCommentsForPost(postId) {
+    return db
+        .prepare("SELECT * FROM comments WHERE post_id = ? AND status = 'approved' ORDER BY created_at ASC")
+        .all(postId);
+}
+
+function listComments() {
+    return db
+        .prepare(
+            `SELECT comments.*, posts.slug AS post_slug, posts.draft_json AS post_draft_json
+             FROM comments JOIN posts ON posts.id = comments.post_id
+             ORDER BY comments.created_at DESC`
+        )
+        .all()
+        .map((row) => ({ ...row, post_title: JSON.parse(row.post_draft_json).title }));
+}
+
+function countPendingComments() {
+    return db.prepare("SELECT COUNT(*) AS c FROM comments WHERE status = 'pending'").get().c;
+}
+
+function approveComment(id) {
+    db.prepare("UPDATE comments SET status = 'approved' WHERE id = ?").run(id);
+}
+
+function deleteComment(id) {
+    db.prepare('DELETE FROM comments WHERE id = ?').run(id);
+}
+
 // ---- admin users ----
 
 function ensureAdminUser(username, passwordHash) {
@@ -223,6 +263,12 @@ module.exports = {
     publishPost,
     unpublishPost,
     deletePost,
+    createComment,
+    listApprovedCommentsForPost,
+    listComments,
+    countPendingComments,
+    approveComment,
+    deleteComment,
     ensureAdminUser,
     getAdminUserByUsername,
 };

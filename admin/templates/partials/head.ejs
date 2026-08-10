@@ -22,3 +22,12 @@
     }
 </style>
 <script src="/assets/js/mobile-menu.js" defer></script>
+<% if (typeof settings !== 'undefined' && settings.googleAnalyticsId) { %>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<%= settings.googleAnalyticsId %>"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '<%= settings.googleAnalyticsId %>');
+</script>
+<% } %>

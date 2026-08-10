@@ -24,6 +24,11 @@
 <h3>Posts do Blog</h3>
 <p><%= postCount %> post(s)</p>
 </a>
+<a class="dash-card" href="/admin/comentarios">
+<span class="material-symbols-outlined">forum</span>
+<h3>Comentários<% if (pendingCommentCount > 0) { %> <span class="badge badge-draft"><%= pendingCommentCount %></span><% } %></h3>
+<p>Moderar comentários do blog</p>
+</a>
 <a class="dash-card" href="/admin/paginas/contato">
 <span class="material-symbols-outlined">mail</span>
 <h3>Página de Contato</h3>

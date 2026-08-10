@@ -8,6 +8,7 @@ router.get('/', requireAuth, (req, res) => {
     res.render('dashboard', {
         exerciseCount: db.listExercises().length,
         postCount: db.listPosts().length,
+        pendingCommentCount: db.countPendingComments(),
     });
 });
 

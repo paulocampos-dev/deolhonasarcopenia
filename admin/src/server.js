@@ -72,6 +72,8 @@ app.use('/admin/exercicios', require('./routes/exercises'));
 app.use('/admin/posts', require('./routes/posts'));
 app.use('/admin/upload', require('./routes/uploads'));
 app.use('/admin/preview', require('./routes/preview'));
+app.use('/admin/comentarios', require('./routes/comments'));
+app.use('/api/comentarios', require('./routes/public-comments'));
 
 app.use((err, req, res, next) => {
     if (err && err.code === 'EBADCSRFTOKEN') {

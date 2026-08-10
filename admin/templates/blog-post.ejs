@@ -34,7 +34,144 @@
 </div>
 <div class="post-body font-body-md text-body-md text-on-surface"><%- post.bodyHtml %></div>
 </article>
+
+<section class="mt-16 pt-8 border-t border-outline-variant" id="comentarios">
+<h2 class="font-headline-md text-headline-md text-tertiary mb-6">Comentários</h2>
+<div class="flex flex-col gap-4 mb-10" data-comments-list>
+<p class="font-body-md text-body-md text-on-surface-variant" data-comments-loading>Carregando comentários...</p>
+</div>
+
+<div class="bg-surface-container-low rounded-xl p-6 lg:p-8 border border-outline-variant">
+<h3 class="font-headline-md text-headline-md text-tertiary mb-4" style="font-size: 20px;">Deixe um comentário</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Nome e contato são opcionais. O contato não é exibido no site - é só para a equipe responder, se você quiser.</p>
+<form class="flex flex-col gap-4" data-comment-form>
+<input aria-hidden="true" autocomplete="off" data-comment-honeypot name="website" style="position:absolute; left:-9999px;" tabindex="-1" type="text"/>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="comment-author">Nome (opcional)</label>
+<input class="min-h-touch-target-min w-full bg-surface-container-lowest border-2 border-transparent text-on-surface rounded-lg px-4 py-3 focus:outline-none focus:border-primary-container transition-colors font-body-md" id="comment-author" maxlength="100" name="authorName" placeholder="Como você quer ser chamado?" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="comment-contact">Contato (opcional)</label>
+<input class="min-h-touch-target-min w-full bg-surface-container-lowest border-2 border-transparent text-on-surface rounded-lg px-4 py-3 focus:outline-none focus:border-primary-container transition-colors font-body-md" id="comment-contact" maxlength="200" name="authorContact" placeholder="E-mail ou telefone" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-lg text-label-lg text-on-surface" for="comment-body">Comentário</label>
+<textarea class="w-full bg-surface-container-lowest border-2 border-transparent text-on-surface rounded-lg px-4 py-3 focus:outline-none focus:border-primary-container transition-colors font-body-md resize-y" id="comment-body" maxlength="2000" name="body" required rows="4"></textarea>
+</div>
+<div class="flex items-center gap-4">
+<button class="min-h-touch-target-min px-8 py-3 bg-primary text-on-primary font-label-lg text-label-lg rounded-full hover:bg-primary/90 transition-colors" type="submit">
+                        Enviar Comentário
+                    </button>
+<p class="font-body-md text-body-md" data-comment-status></p>
+</div>
+</form>
+</div>
+</section>
 </main>
 <%- include('partials/footer', { brandText: settings.brandText, footerOrgLine: settings.footerOrgLine, contactEmail: settings.contactEmail, instagramUrl: settings.instagramUrl, instagramLabel: settings.instagramLabel }) %>
+<script>
+(function () {
+    var slug = <%- JSON.stringify(post.slug) %>;
+    var apiUrl = '/api/comentarios/' + encodeURIComponent(slug);
+    var list = document.querySelector('[data-comments-list]');
+    var form = document.querySelector('[data-comment-form]');
+    var status = document.querySelector('[data-comment-status]');
+
+    function formatDate(iso) {
+        try {
+            return new Date(iso.replace(' ', 'T') + 'Z').toLocaleDateString('pt-BR', {
+                day: '2-digit', month: 'long', year: 'numeric',
+            });
+        } catch (e) {
+            return '';
+        }
+    }
+
+    function renderComment(c) {
+        var wrap = document.createElement('div');
+        wrap.className = 'border-b border-outline-variant pb-4';
+        var head = document.createElement('div');
+        head.className = 'flex items-center gap-3 mb-1';
+        var name = document.createElement('span');
+        name.className = 'font-label-lg text-label-lg text-on-surface';
+        name.textContent = c.authorName;
+        var date = document.createElement('span');
+        date.className = 'font-body-md text-sm text-on-surface-variant';
+        date.textContent = formatDate(c.createdAt);
+        head.appendChild(name);
+        head.appendChild(date);
+        var body = document.createElement('p');
+        body.className = 'font-body-md text-body-md text-on-surface-variant';
+        body.textContent = c.body;
+        wrap.appendChild(head);
+        wrap.appendChild(body);
+        return wrap;
+    }
+
+    function loadComments() {
+        fetch(apiUrl)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                list.innerHTML = '';
+                if (!data.comments || data.comments.length === 0) {
+                    var empty = document.createElement('p');
+                    empty.className = 'font-body-md text-body-md text-on-surface-variant';
+                    empty.textContent = 'Seja o primeiro a comentar.';
+                    list.appendChild(empty);
+                    return;
+                }
+                data.comments.forEach(function (c) {
+                    list.appendChild(renderComment(c));
+                });
+            })
+            .catch(function () {
+                list.innerHTML = '';
+                var err = document.createElement('p');
+                err.className = 'font-body-md text-body-md text-on-surface-variant';
+                err.textContent = 'Não foi possível carregar os comentários.';
+                list.appendChild(err);
+            });
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        status.textContent = 'Enviando...';
+        var formData = new FormData(form);
+        var payload = {
+            authorName: formData.get('authorName'),
+            authorContact: formData.get('authorContact'),
+            body: formData.get('body'),
+            website: formData.get('website'),
+        };
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        })
+            .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+            .then(function (result) {
+                if (!result.ok) {
+                    status.textContent = result.data.error || 'Erro ao enviar comentário.';
+                    return;
+                }
+                if (result.data.status === 'approved' && result.data.comment) {
+                    if (list.querySelector('p')) list.innerHTML = '';
+                    list.appendChild(renderComment(result.data.comment));
+                    status.textContent = 'Comentário publicado!';
+                } else {
+                    status.textContent = 'Comentário enviado! Ele será exibido em breve.';
+                }
+                form.reset();
+            })
+            .catch(function () {
+                status.textContent = 'Erro ao enviar comentário. Verifique sua conexão.';
+            });
+    });
+
+    loadComments();
+})();
+</script>
 </body>
 </html>

@@ -21,6 +21,9 @@ const { generateToken, doubleCsrfProtection, invalidCsrfTokenError } = doubleCsr
     // wrong key here is silently ignored (falls back to header-only), which
     // breaks every plain <form> POST since none of them send that header.
     getTokenFromRequest: (req) => req.headers['x-csrf-token'] || (req.body && req.body._csrf),
+    // The public comment API has no session to protect (anonymous visitors,
+    // no login) - it has its own defenses (rate limit + honeypot) instead.
+    skipCsrfProtection: (req) => req.path.startsWith('/api/comentarios'),
 });
 
 module.exports = { generateCsrfToken: generateToken, doubleCsrfProtection, invalidCsrfTokenError };

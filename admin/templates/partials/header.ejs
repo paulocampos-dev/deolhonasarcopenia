@@ -25,7 +25,7 @@ const mobileClass = (isActive) =>
 <%= brandText %>
 </a>
 <nav aria-label="Navegação principal" class="hidden md:flex gap-gutter items-center">
-<% navItems.forEach(function (item) { %>
+<% navItems.filter(function (item) { return item.key !== 'contato'; }).forEach(function (item) { %>
 <a class="<%= desktopClass(item.key === activePage) %>" href="<%= item.href %>"<% if (item.key === activePage) { %> aria-current="page"<% } %>><%= item.label %></a>
 <% }) %>
 </nav>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Comentários' }) %>
+</head>
+<body>
+<%- include('partials/nav', { csrfToken }) %>
+<div class="admin-shell">
+<h1>Comentários</h1>
+<p class="hint">Comentários aparecem no site assim que enviados, exceto quando contêm palavras bloqueadas - esses ficam como "Aguardando revisão" até você aprovar.</p>
+<% if (flash) { %>
+<div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+<% } %>
+
+<% comments.forEach(function (c) { %>
+<div class="admin-card" style="margin-bottom: 16px; padding: 20px;">
+<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+<div style="min-width:0;">
+<div class="list-item-meta">
+<span class="badge <%= c.status === 'approved' ? 'badge-published' : 'badge-draft' %>"><%= c.status === 'approved' ? 'Publicado' : 'Aguardando revisão' %></span>
+em <a href="/admin/posts/<%= c.post_id %>"><%= c.post_title %></a>
+</div>
+<p style="margin: 8px 0; overflow-wrap: anywhere;"><%= c.body %></p>
+<div class="list-item-meta">
+<strong><%= c.author_name || 'Anônimo' %></strong>
+<% if (c.author_contact) { %> · <%= c.author_contact %><% } %>
+· <%= c.created_at %>
+</div>
+</div>
+<div class="list-item-actions">
+<% if (c.status !== 'approved') { %>
+<form action="/admin/comentarios/<%= c.id %>/aprovar" method="POST" style="margin:0;">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-primary" type="submit">Aprovar</button>
+</form>
+<% } %>
+<form action="/admin/comentarios/<%= c.id %>/excluir" method="POST" onsubmit="return confirm('Excluir este comentário permanentemente?');" style="margin:0;">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-danger" type="submit">Excluir</button>
+</form>
+</div>
+</div>
+</div>
+<% }) %>
+<% if (comments.length === 0) { %>
+<p class="hint">Nenhum comentário ainda.</p>
+<% } %>
+</div>
+</body>
+</html>

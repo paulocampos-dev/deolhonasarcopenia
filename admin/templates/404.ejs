@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Página não encontrada - De Olho Na Sarcopenia', description: 'A página que você procura não existe ou foi movida.' }) %>
+<meta content="noindex" name="robots"/>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<%- include('partials/header', { activePage: '', brandText: settings.brandText, logoImage: settings.logoImage }) %>
+<main class="flex-grow flex flex-col items-center justify-center py-16 px-container-padding-mobile lg:px-container-padding-desktop text-center">
+<div class="max-w-xl mx-auto flex flex-col items-center gap-6">
+<div class="w-16 h-16 rounded-full bg-secondary/20 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl icon-fill">search_off</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary">Página não encontrada</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    A página que você procura não existe ou foi movida. Confira o endereço ou volte para o início.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<a class="inline-flex items-center justify-center min-h-touch-target-min px-6 py-3 bg-primary text-on-primary font-label-lg text-label-lg rounded-lg hover:bg-primary-container transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2" href="/">
+                        Voltar para o Início
+                    </a>
+<a class="inline-flex items-center justify-center min-h-touch-target-min px-6 py-3 bg-surface border-2 border-secondary text-secondary font-label-lg text-label-lg rounded-lg hover:bg-secondary/10 transition-colors" href="/blog/">
+                        Ver o Blog
+                    </a>
+</div>
+</div>
+</main>
+<%- include('partials/footer', { brandText: settings.brandText, footerOrgLine: settings.footerOrgLine, contactEmail: settings.contactEmail, instagramUrl: settings.instagramUrl, instagramLabel: settings.instagramLabel }) %>
+</body>
+</html>

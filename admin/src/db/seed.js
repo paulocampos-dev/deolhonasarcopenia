@@ -17,6 +17,7 @@ function seedSettings() {
         primaryColor: '#243f20',
         secondaryColor: '#835500',
         tertiaryColor: '#75070c',
+        googleAnalyticsId: '',
     });
     db.publishSettings();
     console.log('Seeded: settings');

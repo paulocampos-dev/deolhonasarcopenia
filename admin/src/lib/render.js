@@ -35,6 +35,7 @@ const DEFAULT_SETTINGS = {
     primaryColor: '#243f20',
     secondaryColor: '#835500',
     tertiaryColor: '#75070c',
+    googleAnalyticsId: '',
 };
 
 function getPublishedSettings() {
@@ -91,6 +92,8 @@ function renderAll() {
     const contatoPage = getPublishedPage('contato', {});
     writeFile('contato/index.html', renderTemplate('contato', { settings, page: contatoPage }));
     writeFile('contato/obrigado/index.html', renderTemplate('contato-obrigado', { settings }));
+
+    writeFile('404.html', renderTemplate('404', { settings }));
 
     // Regenerate each published post's detail page, and remove any post
     // directory under public/blog/ that's no longer published (deleted or
