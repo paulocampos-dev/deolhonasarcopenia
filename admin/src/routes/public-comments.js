@@ -22,9 +22,11 @@ function plainText(value, maxLength) {
 function formatComment(row) {
     return {
         id: row.id,
+        parentId: row.parent_id || null,
         authorName: row.author_name || 'Anônimo',
         body: row.body,
         createdAt: row.created_at,
+        isAdmin: Boolean(row.is_admin),
     };
 }
 
@@ -53,7 +55,17 @@ router.post('/:slug', commentLimiter, (req, res) => {
     const authorContact = plainText(req.body.authorContact, 200) || null;
     const status = containsProfanity(body) || containsProfanity(authorName) ? 'pending' : 'approved';
 
-    const id = db.createComment(post.id, { authorName, authorContact, body, status });
+    // Only one level of nesting: replying to a reply attaches to that
+    // reply's own top-level parent instead of stacking further.
+    let parentId = null;
+    if (req.body.parentId) {
+        const parent = db.getComment(req.body.parentId);
+        if (parent && parent.post_id === post.id) {
+            parentId = parent.parent_id || parent.id;
+        }
+    }
+
+    const id = db.createComment(post.id, { authorName, authorContact, body, status, parentId, isAdmin: false });
 
     if (status === 'approved') {
         const row = db.listApprovedCommentsForPost(post.id).find((c) => c.id === id);

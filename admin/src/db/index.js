@@ -13,6 +13,18 @@ db.pragma('foreign_keys = ON');
 const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
 db.exec(schema);
 
+// Lightweight migration for columns added after a table already existed in
+// deployed databases (CREATE TABLE IF NOT EXISTS above only helps on a
+// fresh DB - it's a no-op against an existing "comments" table).
+function ensureColumn(table, column, definition) {
+    const cols = db.prepare(`PRAGMA table_info(${table})`).all();
+    if (!cols.some((c) => c.name === column)) {
+        db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    }
+}
+ensureColumn('comments', 'parent_id', 'INTEGER REFERENCES comments(id) ON DELETE CASCADE');
+ensureColumn('comments', 'is_admin', 'INTEGER NOT NULL DEFAULT 0');
+
 function now() {
     return new Date().toISOString();
 }
@@ -187,13 +199,17 @@ function deletePost(id) {
 
 // ---- comments ----
 
-function createComment(postId, { authorName, authorContact, body, status }) {
+function createComment(postId, { authorName, authorContact, body, status, parentId, isAdmin }) {
     const info = db
         .prepare(
-            'INSERT INTO comments (post_id, author_name, author_contact, body, status, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+            'INSERT INTO comments (post_id, parent_id, author_name, author_contact, body, status, is_admin, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         )
-        .run(postId, authorName || null, authorContact || null, body, status, now());
+        .run(postId, parentId || null, authorName || null, authorContact || null, body, status, isAdmin ? 1 : 0, now());
     return info.lastInsertRowid;
+}
+
+function getComment(id) {
+    return db.prepare('SELECT * FROM comments WHERE id = ?').get(id);
 }
 
 function listApprovedCommentsForPost(postId) {
@@ -264,6 +280,7 @@ module.exports = {
     unpublishPost,
     deletePost,
     createComment,
+    getComment,
     listApprovedCommentsForPost,
     listComments,
     countPendingComments,

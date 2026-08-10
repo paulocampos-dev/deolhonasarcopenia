@@ -2,6 +2,13 @@
 <html lang="pt-BR">
 <head>
 <%- include('partials/head', { title: 'Comentários' }) %>
+<style>
+    .comment-reply { margin-left: 32px; margin-top: 12px; border-left: 3px solid var(--outline); padding-left: 16px; }
+    .comment-admin-badge { background: var(--primary); color: #fff; }
+    details.reply-toggle > summary { cursor: pointer; color: var(--primary); font-weight: 600; list-style: none; }
+    details.reply-toggle > summary::-webkit-details-marker { display: none; }
+    details.reply-toggle form { margin-top: 12px; }
+</style>
 </head>
 <body>
 <%- include('partials/nav', { csrfToken }) %>
@@ -12,13 +19,12 @@
 <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
 <% } %>
 
-<% comments.forEach(function (c) { %>
-<div class="admin-card" style="margin-bottom: 16px; padding: 20px;">
-<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
-<div style="min-width:0;">
+<%
+function commentBody(c) {
+%>
 <div class="list-item-meta">
+<% if (c.is_admin) { %><span class="badge comment-admin-badge">Equipe</span><% } %>
 <span class="badge <%= c.status === 'approved' ? 'badge-published' : 'badge-draft' %>"><%= c.status === 'approved' ? 'Publicado' : 'Aguardando revisão' %></span>
-em <a href="/admin/posts/<%= c.post_id %>"><%= c.post_title %></a>
 </div>
 <p style="margin: 8px 0; overflow-wrap: anywhere;"><%= c.body %></p>
 <div class="list-item-meta">
@@ -26,6 +32,16 @@ em <a href="/admin/posts/<%= c.post_id %>"><%= c.post_title %></a>
 <% if (c.author_contact) { %> · <%= c.author_contact %><% } %>
 · <%= c.created_at %>
 </div>
+<%
+}
+%>
+
+<% topLevel.forEach(function (c) { %>
+<div class="admin-card" style="margin-bottom: 16px; padding: 20px;">
+<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+<div style="min-width:0; flex: 1 1 260px;">
+<div class="list-item-meta">em <a href="/admin/posts/<%= c.post_id %>"><%= c.post_title %></a></div>
+<% commentBody(c); %>
 </div>
 <div class="list-item-actions">
 <% if (c.status !== 'approved') { %>
@@ -40,9 +56,42 @@ em <a href="/admin/posts/<%= c.post_id %>"><%= c.post_title %></a>
 </form>
 </div>
 </div>
+
+<% (repliesByParent[c.id] || []).forEach(function (r) { %>
+<div class="comment-reply">
+<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+<div style="min-width:0; flex: 1 1 200px;">
+<% commentBody(r); %>
+</div>
+<div class="list-item-actions">
+<% if (r.status !== 'approved') { %>
+<form action="/admin/comentarios/<%= r.id %>/aprovar" method="POST" style="margin:0;">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-primary" type="submit">Aprovar</button>
+</form>
+<% } %>
+<form action="/admin/comentarios/<%= r.id %>/excluir" method="POST" onsubmit="return confirm('Excluir esta resposta permanentemente?');" style="margin:0;">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<button class="btn btn-danger" type="submit">Excluir</button>
+</form>
+</div>
+</div>
 </div>
 <% }) %>
-<% if (comments.length === 0) { %>
+
+<details class="reply-toggle" style="margin-top: 12px;">
+<summary>Responder como equipe</summary>
+<form action="/admin/comentarios/<%= c.id %>/responder" method="POST">
+<input name="_csrf" type="hidden" value="<%= csrfToken %>"/>
+<textarea name="body" placeholder="Escreva sua resposta..." required rows="3"></textarea>
+<div class="btn-row" style="margin-top: 12px;">
+<button class="btn btn-primary" type="submit">Enviar Resposta</button>
+</div>
+</form>
+</details>
+</div>
+<% }) %>
+<% if (topLevel.length === 0) { %>
 <p class="hint">Nenhum comentário ainda.</p>
 <% } %>
 </div>

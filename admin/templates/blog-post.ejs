@@ -89,24 +89,162 @@
         }
     }
 
-    function renderComment(c) {
+    function postComment(payload, cb) {
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        })
+            .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+            .then(function (result) { cb(null, result); })
+            .catch(function (err) { cb(err); });
+    }
+
+    function buildReplyForm(parentId, onPosted) {
         var wrap = document.createElement('div');
-        wrap.className = 'border-b border-outline-variant pb-4';
+        wrap.className = 'mt-3 bg-surface-container-low rounded-lg p-4';
+        var innerForm = document.createElement('form');
+        innerForm.className = 'flex flex-col gap-3';
+
+        var honeypot = document.createElement('input');
+        honeypot.type = 'text';
+        honeypot.name = 'website';
+        honeypot.tabIndex = -1;
+        honeypot.autocomplete = 'off';
+        honeypot.setAttribute('aria-hidden', 'true');
+        honeypot.style.position = 'absolute';
+        honeypot.style.left = '-9999px';
+
+        var fieldClass = 'min-h-[44px] w-full bg-surface-container-lowest border-2 border-transparent text-on-surface rounded-lg px-3 py-2 focus:outline-none focus:border-primary-container font-body-md text-sm';
+
+        var row = document.createElement('div');
+        row.className = 'grid grid-cols-1 sm:grid-cols-2 gap-3';
+        var nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.placeholder = 'Nome (opcional)';
+        nameInput.maxLength = 100;
+        nameInput.className = fieldClass;
+        var contactInput = document.createElement('input');
+        contactInput.type = 'text';
+        contactInput.placeholder = 'Contato (opcional)';
+        contactInput.maxLength = 200;
+        contactInput.className = fieldClass;
+        row.appendChild(nameInput);
+        row.appendChild(contactInput);
+
+        var bodyInput = document.createElement('textarea');
+        bodyInput.required = true;
+        bodyInput.maxLength = 2000;
+        bodyInput.rows = 3;
+        bodyInput.placeholder = 'Escreva sua resposta...';
+        bodyInput.className = fieldClass + ' resize-y';
+
+        var actionsRow = document.createElement('div');
+        actionsRow.className = 'flex items-center gap-3';
+        var submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.textContent = 'Enviar Resposta';
+        submitBtn.className = 'min-h-[40px] px-5 bg-primary text-on-primary font-label-lg text-sm rounded-full hover:bg-primary/90 transition-colors';
+        var replyStatus = document.createElement('span');
+        replyStatus.className = 'font-body-md text-sm text-on-surface-variant';
+        actionsRow.appendChild(submitBtn);
+        actionsRow.appendChild(replyStatus);
+
+        innerForm.appendChild(honeypot);
+        innerForm.appendChild(row);
+        innerForm.appendChild(bodyInput);
+        innerForm.appendChild(actionsRow);
+        wrap.appendChild(innerForm);
+
+        innerForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!bodyInput.value.trim()) return;
+            replyStatus.textContent = 'Enviando...';
+            postComment(
+                {
+                    authorName: nameInput.value,
+                    authorContact: contactInput.value,
+                    body: bodyInput.value,
+                    website: honeypot.value,
+                    parentId: parentId,
+                },
+                function (err, result) {
+                    if (err || !result.ok) {
+                        replyStatus.textContent = (result && result.data && result.data.error) || 'Erro ao enviar.';
+                        return;
+                    }
+                    if (result.data.status === 'approved' && result.data.comment) {
+                        onPosted(result.data.comment);
+                        wrap.remove();
+                    } else {
+                        replyStatus.textContent = 'Resposta enviada! Será exibida em breve.';
+                        innerForm.reset();
+                    }
+                }
+            );
+        });
+
+        return wrap;
+    }
+
+    function renderComment(c, opts) {
+        opts = opts || {};
+        var wrap = document.createElement('div');
+        wrap.className = opts.isReply
+            ? 'ml-6 sm:ml-10 mt-4 pl-4 border-l-2 border-outline-variant'
+            : 'border-b border-outline-variant pb-4';
+
         var head = document.createElement('div');
-        head.className = 'flex items-center gap-3 mb-1';
+        head.className = 'flex items-center flex-wrap gap-2 mb-1';
         var name = document.createElement('span');
         name.className = 'font-label-lg text-label-lg text-on-surface';
         name.textContent = c.authorName;
+        head.appendChild(name);
+        if (c.isAdmin) {
+            var badge = document.createElement('span');
+            badge.className = 'text-xs font-bold px-2 py-0.5 rounded-full bg-primary text-on-primary';
+            badge.textContent = 'Equipe';
+            head.appendChild(badge);
+        }
         var date = document.createElement('span');
         date.className = 'font-body-md text-sm text-on-surface-variant';
         date.textContent = formatDate(c.createdAt);
-        head.appendChild(name);
         head.appendChild(date);
+
         var body = document.createElement('p');
         body.className = 'font-body-md text-body-md text-on-surface-variant';
         body.textContent = c.body;
+
         wrap.appendChild(head);
         wrap.appendChild(body);
+
+        var repliesContainer = document.createElement('div');
+        wrap.appendChild(repliesContainer);
+        (opts.replies || []).forEach(function (r) {
+            repliesContainer.appendChild(renderComment(r, { isReply: true }));
+        });
+
+        if (!opts.isReply) {
+            var formSlot = document.createElement('div');
+            var replyToggle = document.createElement('button');
+            replyToggle.type = 'button';
+            replyToggle.className = 'mt-2 font-label-lg text-sm text-primary hover:underline';
+            replyToggle.textContent = 'Responder';
+            replyToggle.addEventListener('click', function () {
+                if (formSlot.firstChild) {
+                    formSlot.innerHTML = '';
+                    return;
+                }
+                formSlot.appendChild(
+                    buildReplyForm(c.id, function (newComment) {
+                        repliesContainer.appendChild(renderComment(newComment, { isReply: true }));
+                    })
+                );
+            });
+            wrap.appendChild(replyToggle);
+            wrap.appendChild(formSlot);
+        }
+
         return wrap;
     }
 
@@ -115,15 +253,23 @@
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 list.innerHTML = '';
-                if (!data.comments || data.comments.length === 0) {
+                var comments = data.comments || [];
+                var topLevel = comments.filter(function (c) { return !c.parentId; });
+                var repliesByParent = {};
+                comments.filter(function (c) { return c.parentId; }).forEach(function (c) {
+                    if (!repliesByParent[c.parentId]) repliesByParent[c.parentId] = [];
+                    repliesByParent[c.parentId].push(c);
+                });
+
+                if (topLevel.length === 0) {
                     var empty = document.createElement('p');
                     empty.className = 'font-body-md text-body-md text-on-surface-variant';
                     empty.textContent = 'Seja o primeiro a comentar.';
                     list.appendChild(empty);
                     return;
                 }
-                data.comments.forEach(function (c) {
-                    list.appendChild(renderComment(c));
+                topLevel.forEach(function (c) {
+                    list.appendChild(renderComment(c, { replies: repliesByParent[c.id] || [] }));
                 });
             })
             .catch(function () {
@@ -139,35 +285,28 @@
         e.preventDefault();
         status.textContent = 'Enviando...';
         var formData = new FormData(form);
-        var payload = {
-            authorName: formData.get('authorName'),
-            authorContact: formData.get('authorContact'),
-            body: formData.get('body'),
-            website: formData.get('website'),
-        };
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        })
-            .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
-            .then(function (result) {
-                if (!result.ok) {
-                    status.textContent = result.data.error || 'Erro ao enviar comentário.';
+        postComment(
+            {
+                authorName: formData.get('authorName'),
+                authorContact: formData.get('authorContact'),
+                body: formData.get('body'),
+                website: formData.get('website'),
+            },
+            function (err, result) {
+                if (err || !result.ok) {
+                    status.textContent = (result && result.data && result.data.error) || 'Erro ao enviar comentário.';
                     return;
                 }
                 if (result.data.status === 'approved' && result.data.comment) {
                     if (list.querySelector('p')) list.innerHTML = '';
-                    list.appendChild(renderComment(result.data.comment));
+                    list.appendChild(renderComment(result.data.comment, { replies: [] }));
                     status.textContent = 'Comentário publicado!';
                 } else {
                     status.textContent = 'Comentário enviado! Ele será exibido em breve.';
                 }
                 form.reset();
-            })
-            .catch(function () {
-                status.textContent = 'Erro ao enviar comentário. Verifique sua conexão.';
-            });
+            }
+        );
     });
 
     loadComments();
