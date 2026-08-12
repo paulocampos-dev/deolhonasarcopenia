@@ -57,6 +57,14 @@
 <label for="instagramLabel">Texto do link do Instagram</label>
 <input id="instagramLabel" name="instagramLabel" required type="text" value="<%= settings.instagramLabel %>"/>
 
+<h2 style="margin-top: 32px;">Botões do Cabeçalho</h2>
+<p class="hint">Textos dos dois botões que aparecem no topo de todas as páginas.</p>
+<label for="headerDiscoverLabel">Texto do botão "Descubra se tem sarcopenia"</label>
+<input id="headerDiscoverLabel" name="headerDiscoverLabel" required type="text" value="<%= settings.headerDiscoverLabel %>"/>
+
+<label for="headerContactLabel">Texto do botão "Entrar em Contato"</label>
+<input id="headerContactLabel" name="headerContactLabel" required type="text" value="<%= settings.headerContactLabel %>"/>
+
 <label for="textScale">Tamanho do texto</label>
 <select id="textScale" name="textScale">
 <% textScales.forEach(function (opt) { %>

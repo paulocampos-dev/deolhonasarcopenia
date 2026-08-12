@@ -82,6 +82,17 @@ function image(fieldName, altFieldName, label) {
 <%- text('heading', 'Título da página') %>
 <%- text('introParagraph', 'Parágrafo de introdução', { multiline: true }) %>
 <%- image('decorativeImage', 'decorativeImageAlt', 'Imagem decorativa') %>
+<% } else if (key === 'descubra') { %>
+<%- text('heading', 'Título da página') %>
+<%- text('formIntroText', 'Texto explicando o formulário', { multiline: true, hint: 'Aparece na caixa laranja em destaque, acima do botão do formulário.' }) %>
+<%- text('formUrl', 'Link do formulário (Google Forms)', { hint: 'Cole aqui o link do formulário do Google.' }) %>
+<%- text('formButtonLabel', 'Texto do botão do formulário') %>
+<%- text('researchHeading', 'Título da seção sobre a pesquisa') %>
+<%- text('researchParagraph', 'Texto explicando o projeto de pesquisa', { multiline: true }) %>
+<%- image('researchImage', 'researchImageAlt', 'Imagem da seção sobre a pesquisa') %>
+<%- text('whatsappNumber', 'Número de WhatsApp da equipe de pesquisa', { hint: 'Apenas números, com código do país e DDD. Ex: 5511999999999' }) %>
+<%- text('whatsappMessage', 'Mensagem pronta do WhatsApp', { multiline: true, hint: 'Preenchida automaticamente quando a pessoa clicar no botão.' }) %>
+<%- text('whatsappButtonLabel', 'Texto do botão do WhatsApp') %>
 <% } %>
 
 <div class="btn-row">

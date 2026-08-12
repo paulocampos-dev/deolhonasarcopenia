@@ -10,6 +10,7 @@ const PAGE_TITLES = {
     home: 'Página Inicial',
     exercicios: 'Página de Exercícios',
     contato: 'Página de Contato',
+    descubra: 'Página "Descubra se Tem Sarcopenia"',
 };
 
 const FIELDS_BY_KEY = {
@@ -43,6 +44,19 @@ const FIELDS_BY_KEY = {
     ],
     exercicios: ['heading', 'warningText'],
     contato: ['heading', 'introParagraph', 'decorativeImage', 'decorativeImageAlt'],
+    descubra: [
+        'heading',
+        'formIntroText',
+        'formUrl',
+        'formButtonLabel',
+        'researchHeading',
+        'researchParagraph',
+        'researchImage',
+        'researchImageAlt',
+        'whatsappNumber',
+        'whatsappMessage',
+        'whatsappButtonLabel',
+    ],
 };
 
 function readForm(key, body) {

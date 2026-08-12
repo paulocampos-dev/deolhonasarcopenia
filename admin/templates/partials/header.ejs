@@ -17,21 +17,26 @@ const mobileClass = (isActive) =>
 <header class="bg-surface dark:bg-surface-container-lowest top-0 sticky z-50 border-b-2 border-primary dark:border-primary-container shadow-sm">
 <div class="flex justify-between items-center px-container-padding-mobile lg:px-container-padding-desktop py-4 max-w-[1200px] mx-auto">
 <a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low transition-colors duration-200 flex items-center gap-2" href="/">
-<% if (logoImage) { %>
-<img alt="<%= brandText %>" class="h-10 w-auto" src="<%= logoImage %>"/>
+<% if (settings.logoImage) { %>
+<img alt="<%= settings.brandText %>" class="h-10 w-auto" src="<%= settings.logoImage %>"/>
 <% } else { %>
 <span class="material-symbols-outlined text-primary icon-fill">vital_signs</span>
 <% } %>
-<%= brandText %>
+<%= settings.brandText %>
 </a>
 <nav aria-label="Navegação principal" class="hidden md:flex gap-gutter items-center">
 <% navItems.filter(function (item) { return item.key !== 'contato'; }).forEach(function (item) { %>
 <a class="<%= desktopClass(item.key === activePage) %>" href="<%= item.href %>"<% if (item.key === activePage) { %> aria-current="page"<% } %>><%= item.label %></a>
 <% }) %>
 </nav>
-<a class="hidden md:inline-flex bg-primary text-white rounded-lg px-6 py-3 min-h-[56px] items-center justify-center font-label-lg hover:bg-primary-container transition-colors duration-200" href="/contato/">
-                Entrar em Contato
-            </a>
+<div class="hidden md:flex items-center gap-3">
+<a class="inline-flex bg-secondary text-white rounded-lg px-6 py-3 min-h-[56px] items-center justify-center font-label-lg hover:bg-secondary/90 transition-colors duration-200" href="/descubra/">
+<%= settings.headerDiscoverLabel %>
+</a>
+<a class="inline-flex bg-primary text-white rounded-lg px-6 py-3 min-h-[56px] items-center justify-center font-label-lg hover:bg-primary-container transition-colors duration-200" href="/contato/">
+<%= settings.headerContactLabel %>
+</a>
+</div>
 <button aria-controls="mobile-menu" aria-expanded="false" aria-label="Menu" class="md:hidden flex items-center justify-center min-h-[48px] min-w-[48px] text-primary" data-mobile-menu-button>
 <span class="material-symbols-outlined" style="font-size: 32px;">menu</span>
 </button>
@@ -41,6 +46,7 @@ const mobileClass = (isActive) =>
 <% navItems.forEach(function (item) { %>
 <a class="<%= mobileClass(item.key === activePage) %>" href="<%= item.href %>"<% if (item.key === activePage) { %> aria-current="page"<% } %>><%= item.label %></a>
 <% }) %>
+<a class="min-h-[48px] flex items-center px-2 text-secondary font-bold" href="/descubra/"><%= settings.headerDiscoverLabel %></a>
 </nav>
 </div>
 </header>

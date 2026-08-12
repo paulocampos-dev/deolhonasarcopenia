@@ -36,6 +36,8 @@ const DEFAULT_SETTINGS = {
     secondaryColor: '#835500',
     tertiaryColor: '#75070c',
     googleAnalyticsId: '',
+    headerContactLabel: 'Entrar em Contato',
+    headerDiscoverLabel: 'Descubra se tem sarcopenia!',
 };
 
 function getPublishedSettings() {
@@ -93,6 +95,9 @@ function renderAll() {
     writeFile('contato/index.html', renderTemplate('contato', { settings, page: contatoPage }));
     writeFile('contato/obrigado/index.html', renderTemplate('contato-obrigado', { settings }));
 
+    const descubraPage = getPublishedPage('descubra', {});
+    writeFile('descubra/index.html', renderTemplate('descubra', { settings, page: descubraPage }));
+
     writeFile('404.html', renderTemplate('404', { settings }));
 
     // Regenerate each published post's detail page, and remove any post
@@ -111,7 +116,7 @@ function renderAll() {
         writeFile(`blog/${post.slug}/index.html`, renderTemplate('blog-post', { settings, post }));
     }
 
-    writeSitemap([...['/', '/exercicios/', '/blog/', '/contato/'], ...posts.map((p) => `/blog/${p.slug}/`)]);
+    writeSitemap([...['/', '/exercicios/', '/blog/', '/contato/', '/descubra/'], ...posts.map((p) => `/blog/${p.slug}/`)]);
 }
 
 function writeSitemap(routes) {
@@ -141,6 +146,12 @@ function previewContato() {
     return renderTemplate('contato', { settings, page });
 }
 
+function previewDescubra() {
+    const settings = getDraftSettings();
+    const page = getDraftPage('descubra', {});
+    return renderTemplate('descubra', { settings, page });
+}
+
 function previewPost(id) {
     const settings = getDraftSettings();
     const row = db.getPost(id);
@@ -155,6 +166,7 @@ module.exports = {
     previewHome,
     previewExercicios,
     previewContato,
+    previewDescubra,
     previewPost,
     getPublishedSettings,
     getDraftSettings,

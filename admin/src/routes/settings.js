@@ -28,6 +28,8 @@ function readSettingsForm(body) {
         contactEmail: (body.contactEmail || '').trim(),
         instagramUrl: (body.instagramUrl || '').trim(),
         instagramLabel: (body.instagramLabel || '').trim(),
+        headerContactLabel: (body.headerContactLabel || '').trim(),
+        headerDiscoverLabel: (body.headerDiscoverLabel || '').trim(),
         logoImage: body.logoImage ? body.logoImage.trim() : null,
         textScale: ['normal', 'grande', 'extra_grande'].includes(body.textScale) ? body.textScale : 'normal',
         primaryColor: readHexColor(body.primaryColor, DEFAULT_PRIMARY),
@@ -46,6 +48,8 @@ router.get('/', requireAuth, (req, res) => {
         secondaryColor: DEFAULT_SECONDARY,
         tertiaryColor: DEFAULT_TERTIARY,
         googleAnalyticsId: '',
+        headerContactLabel: 'Entrar em Contato',
+        headerDiscoverLabel: 'Descubra se tem sarcopenia!',
         ...row.draft,
     };
     res.render('settings', { settings, textScales: TEXT_SCALES, isPublished: Boolean(row.published) });

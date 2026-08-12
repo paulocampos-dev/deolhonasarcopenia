@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR">
+<head>
+<%- include('partials/head', { title: 'Descubra se Tem Sarcopenia - De Olho Na Sarcopenia', description: 'Responda um formulário rápido para avaliar sinais de sarcopenia e saiba como participar da nossa pesquisa.' }) %>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col">
+<%- include('partials/header', { activePage: 'descubra', settings: settings }) %>
+<main class="flex-grow flex flex-col items-center w-full px-container-padding-mobile lg:px-container-padding-desktop py-stack-gap max-w-[1200px] mx-auto gap-stack-gap">
+<!-- Page Header -->
+<section class="w-full text-center max-w-3xl mx-auto space-y-unit">
+<h1 class="font-display-lg text-display-lg text-primary"><%= page.heading %></h1>
+</section>
+<!-- Form Callout -->
+<section class="w-full max-w-4xl mx-auto">
+<div class="bg-golden-orange text-white rounded-3xl p-8 md:p-12 flex flex-col items-center text-center gap-6 shadow-sm">
+<span class="material-symbols-outlined text-5xl icon-fill">quiz</span>
+<p class="font-body-lg text-body-lg max-w-2xl"><%= page.formIntroText %></p>
+<a class="inline-flex items-center gap-2 bg-white text-golden-orange font-label-lg text-label-lg px-8 py-4 rounded-full hover:bg-surface-container-low transition-colors duration-200" href="<%= page.formUrl %>" rel="noopener noreferrer" target="_blank">
+<%= page.formButtonLabel %>
+<span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</section>
+<!-- Research Section -->
+<section class="bg-surface py-stack-lg w-full rounded-3xl">
+<div class="px-gutter max-w-container-max mx-auto flex flex-col md:flex-row gap-stack-lg items-center">
+<div class="flex-1 space-y-6">
+<h2 class="font-headline-md text-headline-md text-tertiary"><%= page.researchHeading %></h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant"><%= page.researchParagraph %></p>
+<a class="inline-flex items-center gap-2 bg-primary text-on-primary font-label-lg text-label-lg px-8 py-4 rounded-full hover:bg-primary/90 focus:ring-4 focus:ring-primary-container active:scale-95 transition-all duration-200 shadow-sm" href="https://wa.me/<%= (page.whatsappNumber || '').replace(/\D/g, '') %>?text=<%= encodeURIComponent(page.whatsappMessage || '') %>" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined icon-fill">chat</span>
+<%= page.whatsappButtonLabel %>
+</a>
+</div>
+<div class="flex-1 relative w-full max-w-md mx-auto aspect-[4/3] md:aspect-square">
+<div class="absolute inset-0 bg-primary rounded-3xl -translate-x-4 translate-y-4"></div>
+<img alt="<%= page.researchImageAlt %>" class="w-full h-full object-cover rounded-3xl relative z-10 border border-outline-variant" src="<%= page.researchImage %>"/>
+</div>
+</div>
+</section>
+</main>
+<%- include('partials/footer', { brandText: settings.brandText, footerOrgLine: settings.footerOrgLine, contactEmail: settings.contactEmail, instagramUrl: settings.instagramUrl, instagramLabel: settings.instagramLabel }) %>
+</body>
+</html>

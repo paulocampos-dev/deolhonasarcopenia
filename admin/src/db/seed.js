@@ -12,6 +12,8 @@ function seedSettings() {
         contactEmail: 'contato@deolhonasarcopenia.com.br',
         instagramUrl: 'https://instagram.com/deolhonasarcopenia',
         instagramLabel: 'Instagram',
+        headerContactLabel: 'Entrar em Contato',
+        headerDiscoverLabel: 'Descubra se tem sarcopenia!',
         logoImage: null,
         textScale: 'normal',
         primaryColor: '#243f20',
@@ -85,6 +87,22 @@ function seedPages() {
             'Estamos aqui para ajudar! Se você tem dúvidas sobre o projeto "De Olho na Sarcopenia", deseja compartilhar sua história ou precisa de mais informações sobre prevenção e exercícios, envie-nos uma mensagem.',
         decorativeImage: '/assets/img/contato-illustration.jpg',
         decorativeImageAlt: 'Ilustração de um idoso sorridente usando um smartphone',
+    });
+
+    seedPage('descubra', {
+        heading: 'Descubra se Tem Sarcopenia',
+        formIntroText:
+            'Responda a um formulário rápido e gratuito para identificar sinais de sarcopenia e receber orientações sobre os próximos passos.',
+        formUrl: '',
+        formButtonLabel: 'Preencher Formulário',
+        researchHeading: 'Sobre a nossa pesquisa',
+        researchParagraph:
+            'O projeto "De Olho na Sarcopenia" também conduz uma pesquisa científica sobre saúde muscular no envelhecimento. Uma das opções do formulário permite manifestar interesse em participar voluntariamente do estudo.',
+        researchImage: '/assets/img/home-about.png',
+        researchImageAlt: 'Pesquisadores da USP analisando dados em laboratório',
+        whatsappNumber: '',
+        whatsappMessage: 'Olá! Preenchi o formulário e tenho interesse em participar da pesquisa sobre sarcopenia.',
+        whatsappButtonLabel: 'Falar no WhatsApp',
     });
 }
 

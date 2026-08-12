@@ -4,7 +4,7 @@
 <%- include('partials/head', { title: 'Blog - De Olho Na Sarcopenia', description: 'Informações confiáveis, dicas de saúde e opiniões de especialistas sobre a Sarcopenia e como manter a qualidade de vida.' }) %>
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col">
-<%- include('partials/header', { activePage: 'blog', brandText: settings.brandText, logoImage: settings.logoImage }) %>
+<%- include('partials/header', { activePage: 'blog', settings: settings }) %>
 <main class="flex-grow w-full max-w-[1200px] mx-auto px-container-padding-mobile lg:px-container-padding-desktop py-12">
 <header class="mb-16 text-center">
 <h1 class="font-display-lg text-display-lg text-primary mb-4"><%= page.heading %></h1>
